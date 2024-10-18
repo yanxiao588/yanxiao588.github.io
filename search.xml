@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>sql-ex习题</title>
+    <url>/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/</url>
+    <content><![CDATA[<h3 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h3><ul>
+<li><p>The database scheme consists of four tables:</p>
+</li>
+<li><p>Product(maker, model, type)</p>
+</li>
+<li><p>PC(code, model, speed, ram, hd, cd, price)</p>
+</li>
+<li><p>Laptop(code, model, speed, ram, hd, screen, price)</p>
+</li>
+<li><p>Printer(code, model, color, type, price)</p>
+</li>
+</ul>
+<blockquote>
+<p>The Product table contains data on the maker, model number, and type of product (‘PC’, ‘Laptop’, or ‘Printer’). It is assumed that model numbers in the Product table are unique for all makers and product types. Each personal computer in the PC table is unambiguously identified by a unique code, and is additionally characterized by its model (foreign key referring to the Product table), processor speed (in MHz) – speed field, RAM capacity (in Mb) - ram, hard disk drive capacity (in Gb) – hd, CD-ROM speed (e.g, ‘4x’) - cd, and its price. The Laptop table is similar to the PC table, except that instead of the CD-ROM speed, it contains the screen size (in inches) – screen. For each printer model in the Printer table, its output type (‘y’ for color and ‘n’ for monochrome) – color field, printing technology (‘Laser’, ‘Jet’, or ‘Matrix’) – type, and price are specified.</p>
+</blockquote>
+<hr>
+<p><strong>19.For each maker having models in the Laptop table, find out the average screen size of the laptops he produces.</strong></p>
+<p><strong>Result set: maker, average screen size.</strong></p>
+<p><code>select distinct maker,avg(l.screen) from Product p, Laptop l where p.model = l.model group by maker;</code></p>
+<hr>
+<p><strong>20.Find the makers producing at least three distinct models of PCs.</strong></p>
+<p><strong>Result set: maker, number of PC models.</strong></p>
+<p><code>select distinct maker,count(model) from Product where type=&#39;PC&#39;group by maker having count(model)&gt;=3;</code></p>
+<hr>
+<p><strong>21.Find out the maximum PC price for each maker having models in the PC table.</strong> </p>
+<p><strong>Result set: maker, maximum price.</strong></p>
+<p><code>select distinct maker,max(price) from Product p1,PC p2 where p1.model=p2.model group by maker;</code></p>
+<hr>
+<p><strong>22.For each value of PC speed that exceeds 600 MHz, find out the average price of PCs with identical speeds.</strong></p>
+<p><strong>Result set: speed, average price.</strong></p>
+<p><code>select speed,avg(price) from PC where PC.speed &gt; 600 group by speed;</code></p>
+<hr>
+<p><strong>23.Get the makers producing both PCs having a speed of 750 MHz or higher and laptops with a speed of 750 MHz or higher.</strong></p>
+<p><strong>Result set: maker</strong></p>
+<p><code>select distinct maker from Product where maker in (select distinct maker from Product p1,PC p2 where p1.model=p2.model and speed &gt;= 750) and maker in (select distinct maker from Product p1,Laptop p2 where p1.model=p2.model and speed &gt;=750)</code></p>
+<hr>
+<p><strong>24.List the models of any type having the highest price of all products present in the database.</strong></p>
+<p><code>with a as (select model,price from PC union select model,price from Laptop union select model,price from Printer )</code> <code>select model from a where price = (select max(price) from a)</code></p>
+<hr>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>空指针和野指针</title>
+    <url>/2024/10/18/%E7%A9%BA%E6%8C%87%E9%92%88%E5%92%8C%E9%87%8E%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<h4 id="1-定义"><a href="#1-定义" class="headerlink" title="1.定义"></a>1.定义</h4><blockquote>
+<p>空指针是指一个指针变量没有被初始化，即没有被赋予具体的内存地址。在程序中，空指针表示指向“空”的内存地址。</p>
+</blockquote>
+<blockquote>
+<p>野指针是指一个指针变量指向一个无效的内存地址，即指针的值不是有效的内存地址。野指针指向的内存可能已经被释放或者尚未分配。</p>
+</blockquote>
+<h3 id="2-区别："><a href="#2-区别：" class="headerlink" title="2.区别："></a>2.区别：</h3><ul>
+<li>空指针是一个<strong>未初始化的指针变量，没有指向具体的内存地址</strong>；而野指针是指<strong>针变量指向一个无效的内存地址</strong>。</li>
+<li>空指针可以被赋予有效的内存地址，成为指向有效内存的指针；而野指针无法被赋予有效的内存地址。</li>
+<li>空指针可以通过对其赋予有效内存地址来解除为空，使其成为有效指针；而野指针没有办法通过赋值操作变为有效指针，只能通过正确的内存分配和释放操作来避免。</li>
+</ul>
+<h3 id="3-形成方式"><a href="#3-形成方式" class="headerlink" title="3.形成方式"></a>3.形成方式</h3><ul>
+<li><p>空指针的形成</p>
+<blockquote>
+<ul>
+<li><strong>在声明指针变量时，没有给它赋初值</strong>。此时指针变量的值是不确定的，称为空指针。</li>
+<li><strong>执行指针变量的值为NULL的赋值操作</strong>，将其设置为空指针。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> *p = <span class="literal">nullptr</span>;  <span class="comment">// p 是一个空指针，指向 &quot;无效&quot; 地址</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (p == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;p is a null pointer.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;p points to a valid memory address.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>野指针的形成</li>
+</ul>
+<blockquote>
+<ul>
+<li>在<strong>声明指针变量后，没有立即给它赋初值，而是直接使用它进行操作</strong>，此时指针变量的值是不确定的，可能指向任意的内存地址，这种指针就称为野指针。</li>
+<li>在<strong>释放了某个内存块后，继续使用指向该内存块的指针变量</strong>，此时指针变量就变成了野指针。因为该内存块已经被释放，再次使用指针变量访问该内存块会引发错误。</li>
+<li>在<strong>函数中返回局部变量的指针，因为局部变量会在函数结束后被销毁</strong>，返回的指针就变成了野指针。</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> * p1 = <span class="keyword">new</span> <span class="type">int</span>;  <span class="comment">// p1 指向堆上分配的内存</span></span><br><span class="line">    <span class="type">int</span> * p2 = <span class="keyword">new</span> <span class="type">int</span>;  <span class="comment">// p2 也指向堆上分配的内存</span></span><br><span class="line">    *p1 = <span class="number">10</span>;            <span class="comment">// 将 p1 指向的内存赋值为 10</span></span><br><span class="line">    p2 = p1;             <span class="comment">// p2 指向与 p1 相同的内存地址</span></span><br><span class="line">    <span class="keyword">delete</span> p1;           <span class="comment">// 此时 p2 是野指针</span></span><br><span class="line">    p1=<span class="literal">nullptr</span>;</span><br><span class="line">    p2=<span class="literal">nullptr</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>c++</category>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建个人博客遇到的问题</title>
+    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
+<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
+<p>deploy:</p>
+<p> type: git</p>
+<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
+<p> branch: master</p>
+<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
+</blockquote>
+<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
+<p>可以用淘宝镜像，执行命令：npm config set registry <a href="http://registry.npm.taobao.org/">http://registry.npm.taobao.org/</a></p>
+<p>切换回官方镜像：npm config set registry <a href="http://www.npmjs.org/">http://www.npmjs.org</a></p>
+<p>查看镜像：npm get registry</p>
+</blockquote>
+<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
+<p>在front-matter<code>中添加</code>description，如：</p>
+<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
+</blockquote>
+<blockquote>
+<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+</search>
