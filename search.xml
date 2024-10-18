@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>搭建个人博客遇到的问题</title>
+    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
+<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
+<p>deploy:</p>
+<p> type: git</p>
+<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
+<p> branch: master</p>
+<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
+</blockquote>
+<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
+<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
+<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
+<p>查看镜像：<code>npm get registry</code></p>
+</blockquote>
+<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
+<p>在front-matter<code>中添加</code>description，如：</p>
+<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
+</blockquote>
+<blockquote>
+<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
+</blockquote>
+<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
+<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
+<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>sql-ex习题</title>
     <url>/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/</url>
     <content><![CDATA[<h3 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h3><ul>
@@ -49,41 +84,6 @@
       <tags>
         <tag>数据库</tag>
         <tag>mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>搭建个人博客遇到的问题</title>
-    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
-<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
-<p>deploy:</p>
-<p> type: git</p>
-<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
-<p> branch: master</p>
-<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
-</blockquote>
-<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
-<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
-<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
-<p>查看镜像：<code>npm get registry</code></p>
-</blockquote>
-<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
-<p>在front-matter<code>中添加</code>description，如：</p>
-<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
-</blockquote>
-<blockquote>
-<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
-</blockquote>
-<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
-<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
-<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
