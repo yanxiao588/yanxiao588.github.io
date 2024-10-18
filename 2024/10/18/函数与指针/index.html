@@ -20,29 +20,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="sql-ex上一些题目自己的答案">
+    <meta name="description" content="关于函数与指针的一些小难点">
 <meta property="og:type" content="article">
-<meta property="og:title" content="sql-ex习题">
-<meta property="og:url" content="http://example.com/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/index.html">
+<meta property="og:title" content="函数与指针">
+<meta property="og:url" content="http://example.com/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/index.html">
 <meta property="og:site_name" content="yanxiao">
-<meta property="og:description" content="sql-ex上一些题目自己的答案">
+<meta property="og:description" content="关于函数与指针的一些小难点">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-10-17T16:59:40.000Z">
-<meta property="article:modified_time" content="2024-10-18T12:47:29.709Z">
+<meta property="article:published_time" content="2024-10-18T13:02:30.000Z">
+<meta property="article:modified_time" content="2024-10-18T13:14:14.269Z">
 <meta property="article:author" content="yanxiao">
-<meta property="article:tag" content="数据库">
-<meta property="article:tag" content="mysql">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="笔记">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/">
+<link rel="canonical" href="http://example.com/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/","path":"2024/10/18/sql-ex习题/","title":"sql-ex习题"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/","path":"2024/10/18/函数与指针/","title":"函数与指针"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>sql-ex习题 | yanxiao</title>
+<title>函数与指针 | yanxiao</title>
   
 
 
@@ -142,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E5%B9%B2"><span class="nav-number">1.</span> <span class="nav-text">题干</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0%E8%AE%A1%E7%AE%97%E6%95%B0%E7%BB%84%E5%A4%A7%E5%B0%8F"><span class="nav-number">1.</span> <span class="nav-text">使用函数计算数组大小</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -203,7 +203,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/touxiang.jpg">
@@ -216,12 +216,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="sql-ex习题 | yanxiao">
-      <meta itemprop="description" content="sql-ex上一些题目自己的答案">
+      <meta itemprop="name" content="函数与指针 | yanxiao">
+      <meta itemprop="description" content="关于函数与指针的一些小难点">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          sql-ex习题
+          函数与指针
         </h1>
 
         <div class="post-meta-container">
@@ -233,7 +233,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-10-18 00:59:40 / 修改时间：20:47:29" itemprop="dateCreated datePublished" datetime="2024-10-18T00:59:40+08:00">2024-10-18</time>
+      <time title="创建时间：2024-10-18 21:02:30 / 修改时间：21:14:14" itemprop="dateCreated datePublished" datetime="2024-10-18T21:02:30+08:00">2024-10-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -241,7 +241,11 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+          <a href="/categories/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/c/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
         </span>
     </span>
 
@@ -252,63 +256,32 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>457</span>
+      <span>165</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
-            <div class="post-description">sql-ex上一些题目自己的答案</div>
+            <div class="post-description">关于函数与指针的一些小难点</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h3><ul>
-<li><p>The database scheme consists of four tables:</p>
-</li>
-<li><p>Product(maker, model, type)</p>
-</li>
-<li><p>PC(code, model, speed, ram, hd, cd, price)</p>
-</li>
-<li><p>Laptop(code, model, speed, ram, hd, screen, price)</p>
-</li>
-<li><p>Printer(code, model, color, type, price)</p>
-</li>
-</ul>
-<blockquote>
-<p>The Product table contains data on the maker, model number, and type of product (‘PC’, ‘Laptop’, or ‘Printer’). It is assumed that model numbers in the Product table are unique for all makers and product types. Each personal computer in the PC table is unambiguously identified by a unique code, and is additionally characterized by its model (foreign key referring to the Product table), processor speed (in MHz) – speed field, RAM capacity (in Mb) - ram, hard disk drive capacity (in Gb) – hd, CD-ROM speed (e.g, ‘4x’) - cd, and its price. The Laptop table is similar to the PC table, except that instead of the CD-ROM speed, it contains the screen size (in inches) – screen. For each printer model in the Printer table, its output type (‘y’ for color and ‘n’ for monochrome) – color field, printing technology (‘Laser’, ‘Jet’, or ‘Matrix’) – type, and price are specified.</p>
+    <div class="post-body" itemprop="articleBody"><h5 id="使用函数计算数组大小"><a href="#使用函数计算数组大小" class="headerlink" title="使用函数计算数组大小"></a>使用函数计算数组大小</h5><blockquote>
+<p>指针在win64系统的大小是8字节</p>
 </blockquote>
-<hr>
-<p><strong>19.For each maker having models in the Laptop table, find out the average screen size of the laptops he produces.</strong></p>
-<p><strong>Result set: maker, average screen size.</strong></p>
-<p><code>select distinct maker,avg(l.screen) from Product p, Laptop l where p.model = l.model group by maker;</code></p>
-<hr>
-<p><strong>20.Find the makers producing at least three distinct models of PCs.</strong></p>
-<p><strong>Result set: maker, number of PC models.</strong></p>
-<p><code>select distinct maker,count(model) from Product where type=&#39;PC&#39;group by maker having count(model)&gt;=3;</code></p>
-<hr>
-<p><strong>21.Find out the maximum PC price for each maker having models in the PC table.</strong> </p>
-<p><strong>Result set: maker, maximum price.</strong></p>
-<p><code>select distinct maker,max(price) from Product p1,PC p2 where p1.model=p2.model group by maker;</code></p>
-<hr>
-<p><strong>22.For each value of PC speed that exceeds 600 MHz, find out the average price of PCs with identical speeds.</strong></p>
-<p><strong>Result set: speed, average price.</strong></p>
-<p><code>select speed,avg(price) from PC where PC.speed &gt; 600 group by speed;</code></p>
-<hr>
-<p><strong>23.Get the makers producing both PCs having a speed of 750 MHz or higher and laptops with a speed of 750 MHz or higher.</strong></p>
-<p><strong>Result set: maker</strong></p>
-<p><code>select distinct maker from Product where maker in (select distinct maker from Product p1,PC p2 where p1.model=p2.model and speed &gt;= 750) and maker in (select distinct maker from Product p1,Laptop p2 where p1.model=p2.model and speed &gt;=750)</code></p>
-<hr>
-<p><strong>24.List the models of any type having the highest price of all products present in the database.</strong></p>
-<p><code>with a as (select model,price from PC union select model,price from Laptop union select model,price from Printer )</code> <code>select model from a where price = (select max(price) from a)</code></p>
-<hr>
+<blockquote>
+<p><code>int *p</code>在进行<code>p++</code>操作时，p的值会增加4字节；而如果是<code>double *p</code>在进行<code>p++</code>操作时，p的值会增加8字节，增加的字节数与指针指向的变量类型有关，需要与区别好指针的大小</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">(<span class="type">int</span>* p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> arr[] = &#123; <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;;</span><br><span class="line">	<span class="built_in">func1</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func2</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func3</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -335,19 +308,19 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
-              <a href="/tags/mysql/" rel="tag"># mysql</a>
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="搭建个人博客遇到的问题">
+                  <i class="fa fa-angle-left"></i> 搭建个人博客遇到的问题
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/10/18/%E7%A9%BA%E6%8C%87%E9%92%88%E5%92%8C%E9%87%8E%E6%8C%87%E9%92%88/" rel="next" title="空指针和野指针">
-                  空指针和野指针 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
