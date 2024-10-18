@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>函数与指针</title>
-    <url>/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/</url>
-    <content><![CDATA[<h5 id="使用函数计算数组大小"><a href="#使用函数计算数组大小" class="headerlink" title="使用函数计算数组大小"></a>使用函数计算数组大小</h5><blockquote>
-<p>指针在win64系统的大小是8字节</p>
+    <title>Mysql随笔</title>
+    <url>/2024/10/19/Mysql%E9%9A%8F%E7%AC%94/</url>
+    <content><![CDATA[<h5 id="union-和-union-all的区别"><a href="#union-和-union-all的区别" class="headerlink" title="union 和 union all的区别"></a>union 和 union all的区别</h5><blockquote>
+<p>union 会把结果的重复部分压缩，而union all则不会，因此在使用<code>count</code>,<code>avg</code>等函数时要注意使用union all，避免</p>
+<p>使用union导致结果压缩而出现错误</p>
+</blockquote>
+<h5 id="将查询结果返回作为一个表"><a href="#将查询结果返回作为一个表" class="headerlink" title="将查询结果返回作为一个表"></a>将查询结果返回作为一个表</h5><blockquote>
+<ul>
+<li><p><code>with new_table_name as (select column1,column2,... from table)</code></p>
+<p>​	<code>select * from new_table_name</code></p>
+</li>
+</ul>
 </blockquote>
 <blockquote>
-<p><code>int *p</code>在进行<code>p++</code>操作时，p的值会增加4字节；而如果是<code>double *p</code>在进行<code>p++</code>操作时，p的值会增加8字节，增加的字节数与指针指向的变量类型有关，需要与区别好指针的大小</p>
+<ul>
+<li><code>select * from (select column1,column2,... from table)new_table_name</code></li>
+</ul>
 </blockquote>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta"># <span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">(<span class="type">int</span>* p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> arr[] = &#123; <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;;</span><br><span class="line">	<span class="built_in">func1</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func2</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func3</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h5 id="查找第几大（小）的-数据"><a href="#查找第几大（小）的-数据" class="headerlink" title="查找第几大（小）的 数据"></a>查找第几大（小）的 数据</h5><blockquote>
+<p><code>select * from table order by column limit n offset n</code></p>
+</blockquote>
+<h5 id="distinct-的作用范围"><a href="#distinct-的作用范围" class="headerlink" title="distinct 的作用范围"></a>distinct 的作用范围</h5><blockquote>
+<p>以<code>select distinct column1,column2 from table</code>为例，distinct作用是消除重复项，此时每一个项为（column1_a,column2_b），因此作用范围是column1,column2</p>
+</blockquote>
 ]]></content>
       <categories>
-        <category>c++</category>
-        <category>笔记</category>
+        <category>“&quot;运维&quot;</category>
+        <category>Mysql</category>
       </categories>
       <tags>
-        <tag>c++</tag>
+        <tag>Mysql</tag>
         <tag>笔记</tag>
+        <tag>运维</tag>
       </tags>
   </entry>
   <entry>
@@ -63,6 +78,20 @@
 <p><strong>24.List the models of any type having the highest price of all products present in the database.</strong></p>
 <p><code>with a as (select model,price from PC union select model,price from Laptop union select model,price from Printer )</code> <code>select model from a where price = (select max(price) from a)</code></p>
 <hr>
+<p><strong>26.Find out the average price of PCs and laptops produced by maker A.</strong><br> <strong>Result set: one overall average price for all items.</strong> </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">with a as(select price from PC p1 left join Product p2 on p1.model=p2.model where maker=&#x27;A&#x27;</span><br><span class="line">union all</span><br><span class="line">select price from Laptop p1 left join Product p2 on p1.model=p2.model where maker=&#x27;A&#x27;)</span><br><span class="line">select avg(price) from a</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<p><strong>27.Find out the average hard disk drive capacity of PCs produced by makers who also manufacture printers.</strong><br> <strong>Result set: maker, average HDD capacity.</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">with a as(select maker, model from Product where maker in (select distinct maker from Product where type=&#x27;Printer&#x27;))</span><br><span class="line">select  maker ,avg(hd) from PC p1 join a on p1.model=a.model group by maker</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>28.Using Product table, find out the number of makers who produce only one model.</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">with a as (select maker,count(model) count from Product group by maker)</span><br><span class="line">select count(maker) from</span><br><span class="line">(select maker from a where count=1)b</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
 ]]></content>
       <categories>
         <category>数据库</category>
@@ -70,6 +99,27 @@
       <tags>
         <tag>数据库</tag>
         <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>函数与指针</title>
+    <url>/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/</url>
+    <content><![CDATA[<h5 id="使用函数计算数组大小"><a href="#使用函数计算数组大小" class="headerlink" title="使用函数计算数组大小"></a>使用函数计算数组大小</h5><blockquote>
+<p>指针在win64系统的大小是8字节</p>
+</blockquote>
+<blockquote>
+<p><code>int *p</code>在进行<code>p++</code>操作时，p的值会增加4字节；而如果是<code>double *p</code>在进行<code>p++</code>操作时，p的值会增加8字节，增加的字节数与指针指向的变量类型有关，需要与区别好指针的大小</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta"># <span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func1</span><span class="params">(<span class="type">int</span>* p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func2</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func3</span><span class="params">(<span class="type">int</span> p[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;数组长度为&quot;</span> &lt;&lt; <span class="built_in">sizeof</span>(p) &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> arr[] = &#123; <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;;</span><br><span class="line">	<span class="built_in">func1</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func2</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="built_in">func3</span>(arr);				<span class="comment">//结果为8</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>c++</category>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+        <tag>c++</tag>
       </tags>
   </entry>
   <entry>
@@ -153,8 +203,8 @@
         <category>笔记</category>
       </categories>
       <tags>
-        <tag>c++</tag>
         <tag>笔记</tag>
+        <tag>c++</tag>
       </tags>
   </entry>
 </search>

@@ -20,25 +20,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Just do it!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="yanxiao">
-<meta property="og:url" content="http://example.com/categories/c/%E7%AC%94%E8%AE%B0/index.html">
+    <meta name="description" content="学习Mysql过程遇到的一些问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql随笔">
+<meta property="og:url" content="http://example.com/2024/10/19/Mysql%E9%9A%8F%E7%AC%94/index.html">
 <meta property="og:site_name" content="yanxiao">
-<meta property="og:description" content="Just do it!">
+<meta property="og:description" content="学习Mysql过程遇到的一些问题">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-10-18T17:43:31.000Z">
+<meta property="article:modified_time" content="2024-10-18T18:36:34.933Z">
 <meta property="article:author" content="yanxiao">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="运维">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/categories/c/%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="http://example.com/2024/10/19/Mysql%E9%9A%8F%E7%AC%94/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"categories/c/笔记/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/19/Mysql%E9%9A%8F%E7%AC%94/","path":"2024/10/19/Mysql随笔/","title":"Mysql随笔"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类: 笔记 | yanxiao</title>
+<title>Mysql随笔 | yanxiao</title>
   
 
 
@@ -125,7 +130,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -138,6 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#union-%E5%92%8C-union-all%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">union 和 union all的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%86%E6%9F%A5%E8%AF%A2%E7%BB%93%E6%9E%9C%E8%BF%94%E5%9B%9E%E4%BD%9C%E4%B8%BA%E4%B8%80%E4%B8%AA%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">将查询结果返回作为一个表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E7%AC%AC%E5%87%A0%E5%A4%A7%EF%BC%88%E5%B0%8F%EF%BC%89%E7%9A%84-%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">查找第几大（小）的 数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#distinct-%E7%9A%84%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="nav-number">4.</span> <span class="nav-text">distinct 的作用范围</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -187,70 +193,160 @@
 
     </div>
 
-    <div class="main-inner category posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
+
+
+<div class="post-block">
   
   
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h1 class="collection-header">笔记
-          <small>分类</small>
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/19/Mysql%E9%9A%8F%E7%AC%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.jpg">
+      <meta itemprop="name" content="yanxiao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yanxiao">
+      <meta itemprop="description" content="Just do it!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Mysql随笔 | yanxiao">
+      <meta itemprop="description" content="学习Mysql过程遇到的一些问题">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Mysql随笔
         </h1>
-      </div>
 
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2024</span>
+
+      <time title="创建时间：2024-10-19 01:43:31 / 修改时间：02:36:34" itemprop="dateCreated datePublished" datetime="2024-10-19T01:43:31+08:00">2024-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E2%80%9C-%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">“"运维"</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E2%80%9C-%E8%BF%90%E7%BB%B4/Mysql/" itemprop="url" rel="index"><span itemprop="name">Mysql</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>151</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">学习Mysql过程遇到的一些问题</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h5 id="union-和-union-all的区别"><a href="#union-和-union-all的区别" class="headerlink" title="union 和 union all的区别"></a>union 和 union all的区别</h5><blockquote>
+<p>union 会把结果的重复部分压缩，而union all则不会，因此在使用<code>count</code>,<code>avg</code>等函数时要注意使用union all，避免</p>
+<p>使用union导致结果压缩而出现错误</p>
+</blockquote>
+<h5 id="将查询结果返回作为一个表"><a href="#将查询结果返回作为一个表" class="headerlink" title="将查询结果返回作为一个表"></a>将查询结果返回作为一个表</h5><blockquote>
+<ul>
+<li><p><code>with new_table_name as (select column1,column2,... from table)</code></p>
+<p>​	<code>select * from new_table_name</code></p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><code>select * from (select column1,column2,... from table)new_table_name</code></li>
+</ul>
+</blockquote>
+<h5 id="查找第几大（小）的-数据"><a href="#查找第几大（小）的-数据" class="headerlink" title="查找第几大（小）的 数据"></a>查找第几大（小）的 数据</h5><blockquote>
+<p><code>select * from table order by column limit n offset n</code></p>
+</blockquote>
+<h5 id="distinct-的作用范围"><a href="#distinct-的作用范围" class="headerlink" title="distinct 的作用范围"></a>distinct 的作用范围</h5><blockquote>
+<p>以<code>select distinct column1,column2 from table</code>为例，distinct作用是消除重复项，此时每一个项为（column1_a,column2_b），因此作用范围是column1,column2</p>
+</blockquote>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-10-18T21:02:30+08:00"
-              content="2024-10-18">
-          10-18
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/" itemprop="url">
-            <span itemprop="name">函数与指针</span>
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
           </a>
       </div>
-
-      
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2024-10-18T01:20:18+08:00"
-              content="2024-10-18">
-          10-18
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2024/10/18/%E7%A9%BA%E6%8C%87%E9%92%88%E5%92%8C%E9%87%8E%E6%8C%87%E9%92%88/" itemprop="url">
-            <span itemprop="name">空指针和野指针</span>
-          </a>
-      </div>
-
-      
-    </header>
-  </article>
-
-    </div>
   </div>
-  
-  
-  
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+              <a href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag"># 运维</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/" rel="prev" title="函数与指针">
+                  <i class="fa fa-angle-left"></i> 函数与指针
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
 
 </div>
   </main>
