@@ -63,9 +63,9 @@
 <p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
 </blockquote>
 <h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
-<p>可以用淘宝镜像，执行命令：npm config set registry <a href="http://registry.npm.taobao.org/">http://registry.npm.taobao.org/</a></p>
-<p>切换回官方镜像：npm config set registry <a href="http://www.npmjs.org/">http://www.npmjs.org</a></p>
-<p>查看镜像：npm get registry</p>
+<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
+<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
+<p>查看镜像：<code>npm get registry</code></p>
 </blockquote>
 <h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
 <p>在front-matter<code>中添加</code>description，如：</p>
@@ -76,7 +76,7 @@
 </blockquote>
 <h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
 <p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
-<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次</p>
+<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
 </blockquote>
 ]]></content>
       <categories>
