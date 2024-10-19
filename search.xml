@@ -42,6 +42,8 @@
     <content><![CDATA[<h5 id="引用传递"><a href="#引用传递" class="headerlink" title="引用传递"></a>引用传递</h5><blockquote>
 <ul>
 <li><p>含义：形参相当于是实参的“别名”，对形参的操作其实就是对实参的操作；而不是像按值传递那样，形参是实参的拷贝</p>
+<p>类比一个人，无论是他的正式名字还是别名，指的都是同一个人</p>
+<p>注意：必须初始化，且初始化后不能改变（区分赋值）</p>
 </li>
 <li><p>示例：</p>
 </li>
@@ -63,6 +65,61 @@
 <p>当static 在函数内修饰变量，可以将变量的生命周期延长至整个程序结束，示例如下：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	 <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span>* result1 = <span class="built_in">test1</span>();</span><br><span class="line">	<span class="type">int</span>* result2 = <span class="built_in">test2</span>();</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">30</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;test&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="comment">//打印这些是为了留多点时间给系统回收空间不然执行太快，test2里面的num在执行完函数来不及回收空间</span></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; *result1 &lt;&lt; std::endl;  <span class="comment">//结果为0</span></span><br><span class="line">	std::cout &lt;&lt; *result2 &lt;&lt; std::endl;  <span class="comment">//结果为-858993460</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+
+</blockquote>
+<h5 id="c-内存分区"><a href="#c-内存分区" class="headerlink" title="c++内存分区"></a>c++内存分区</h5><blockquote>
+<ul>
+<li>代码区：存放函数体的二进制代码，由操作系统管理</li>
+<li>全局区：存放全局变量，静态变量，常量</li>
+<li>栈区：由编译器自动分配释放，存放函数的参数值，局部变量等</li>
+<li>堆区：由程序员分配释放，程序结束后系统回收</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>程序执行前</strong></p>
+<p>在编译后，生成.exe可执行文件，此时未执行区域分两个区域：</p>
+<ul>
+<li><p>代码区：</p>
+<ul>
+<li>存放cpu指令</li>
+<li>代码区是共享的，因为程序可以被多次执行，但只需要存放一份代码进行</li>
+<li>代码区是只读的，防止意外修改了指令</li>
+</ul>
+</li>
+<li><p>全局区</p>
+<ul>
+<li><p>存放全局变量和静态变量</p>
+</li>
+<li><p>也包含了常量区，字符串常量和其他常量也存放在这</p>
+</li>
+<li><p>程序结束后操作系统释放</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h5 id="函数的默认参数"><a href="#函数的默认参数" class="headerlink" title="函数的默认参数"></a>函数的默认参数</h5><blockquote>
+<ul>
+<li><p>当某个参数使用了默认值后，其后面的参数也必须使用默认值，下面是<strong>错误</strong>的示例</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c)</span></span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>当函数的声明已经有默认值了，函数的定义就不能有默认值，反过来也一样，下面是<strong>错误</strong>的示例</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+<h5 id="函数的重载"><a href="#函数的重载" class="headerlink" title="函数的重载"></a>函数的重载</h5><blockquote>
+<ul>
+<li>作用：函数名可以相同，提高复用性</li>
+<li>条件<ul>
+<li>同一作用域下</li>
+<li>函数名相同</li>
+<li>函数参数类型不同或者参数个数不同或者顺序不同</li>
+</ul>
+</li>
+<li>注意事项：函数返回值不同不能作为重载条件</li>
+</ul>
 </blockquote>
 ]]></content>
       <categories>
@@ -72,33 +129,6 @@
       <tags>
         <tag>笔记</tag>
         <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>cpp练习</title>
-    <url>/2024/10/20/cpp%E7%BB%83%E4%B9%A0/</url>
-    <content><![CDATA[<h5 id="1-通讯录"><a href="#1-通讯录" class="headerlink" title="1.通讯录"></a>1.通讯录</h5><blockquote>
-<p>设计一个通讯录系统，要求实现以下菜单功能：</p>
-<ul>
-<li>添加联系人</li>
-<li>显示所有联系人</li>
-<li>删除联系人</li>
-<li>查询联系人</li>
-<li>编辑联系人</li>
-<li>清空联系人</li>
-<li>退出菜单</li>
-</ul>
-</blockquote>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">存储结构是链表</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">concats</span> &#123;</span><br><span class="line">	std::string name = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string phone_num = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string gender = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string house_address = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	<span class="type">bool</span> flag = <span class="literal">false</span>;<span class="comment">//判断是否已经添加信息</span></span><br><span class="line">	concats* next = <span class="literal">nullptr</span>;<span class="comment">//下一个节点的地址</span></span><br><span class="line"></span><br><span class="line">&#125;concats;</span><br><span class="line"></span><br><span class="line"><span class="comment">//添加联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp = <span class="keyword">new</span> concats;</span><br><span class="line">	tmp-&gt;flag = <span class="literal">true</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入姓名：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入电话号码：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;phone_num;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入性别：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;gender;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入家庭地址：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;house_address;</span><br><span class="line">	<span class="keyword">while</span> (test_concats-&gt;next != <span class="literal">nullptr</span>)<span class="comment">//找出链表的最后的一个元素</span></span><br><span class="line">	&#123;</span><br><span class="line">		test_concats = test_concats-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	test_concats-&gt;next = tmp;<span class="comment">//添加新元素到队列中</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//显示联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != <span class="string">&quot;&quot;</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; test_concats-&gt;name &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;phone_num &lt;&lt; <span class="string">&quot;\t&quot;</span></span><br><span class="line">				&lt;&lt; test_concats-&gt;gender &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;house_address &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//删除联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">deletes</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要删除的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	concats* last_concats = <span class="keyword">new</span> concats;<span class="comment">// 辅助节点，假设有节点a,b,c,要删除节点b,则需要将c的地址传递给a.next，任何delete（c）</span></span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != name)</span><br><span class="line">		&#123;</span><br><span class="line">			last_concats = test_concats;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			last_concats-&gt;next = test_concats-&gt;next;</span><br><span class="line">			<span class="built_in">delete</span>(test_concats);</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查询联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">query</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要查询的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != name)</span><br><span class="line">		&#123;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; test_concats-&gt;name &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;phone_num &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;gender</span><br><span class="line">				&lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;house_address &lt;&lt; std::endl;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//修改联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">edit</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp = <span class="keyword">new</span> concats;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要修改的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name == name)</span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; <span class="string">&quot;请输入新的手机号码：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">			std::cin &gt;&gt; test_concats-&gt;phone_num;</span><br><span class="line">			std::cout &lt;&lt; <span class="string">&quot;请输入新的家庭地址：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">			std::cin &gt;&gt; test_concats-&gt;house_address;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;很抱歉，未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//清空联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">clear</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp;</span><br><span class="line">	<span class="keyword">while</span> (test_concats-&gt;next != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		tmp = test_concats-&gt;next;</span><br><span class="line">		test_concats-&gt;next = (test_concats-&gt;next)-&gt;next;<span class="comment">//有问题</span></span><br><span class="line">		<span class="built_in">delete</span>(tmp);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//创建链表，第一个元素为链表头，不存储任何联系人信息，但是flag设置为true；</span></span><br><span class="line">	concats* test_concats = <span class="keyword">new</span> concats;</span><br><span class="line">	test_concats-&gt;flag = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">operations</span> &#123; add_concats = <span class="number">1</span>, display_concats, delete_concats, query_concats, edit_concats, clear_concats, quit &#125;; <span class="comment">// 定义枚举类型operations</span></span><br><span class="line">	<span class="type">int</span> choice;</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;******************************&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;请输入您的选择：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;1.添加联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;2.显示所有联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;3.删除联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;4.查询联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;5.编辑联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;6.清空联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;0.退出菜单&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;******************************&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cin &gt;&gt; choice;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">switch</span> (choice)</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> add_concats:</span><br><span class="line">			<span class="built_in">add</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> display_concats:</span><br><span class="line">			<span class="built_in">display</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> delete_concats:</span><br><span class="line">			<span class="built_in">deletes</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> query_concats:</span><br><span class="line">			<span class="built_in">query</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> edit_concats:</span><br><span class="line">			<span class="built_in">edit</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> clear_concats:</span><br><span class="line">			<span class="built_in">clear</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> quit:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>“&quot;c++&quot;</category>
-        <category>练习</category>
-      </categories>
-      <tags>
-        <tag>c++</tag>
-        <tag>练习</tag>
       </tags>
   </entry>
   <entry>
@@ -185,6 +215,68 @@
       </tags>
   </entry>
   <entry>
+    <title>cpp练习</title>
+    <url>/2024/10/20/cpp%E7%BB%83%E4%B9%A0/</url>
+    <content><![CDATA[<h5 id="1-通讯录"><a href="#1-通讯录" class="headerlink" title="1.通讯录"></a>1.通讯录</h5><blockquote>
+<p>设计一个通讯录系统，要求实现以下菜单功能：</p>
+<ul>
+<li>添加联系人</li>
+<li>显示所有联系人</li>
+<li>删除联系人</li>
+<li>查询联系人</li>
+<li>编辑联系人</li>
+<li>清空联系人</li>
+<li>退出菜单</li>
+</ul>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">存储结构是链表</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">concats</span> &#123;</span><br><span class="line">	std::string name = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string phone_num = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string gender = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	std::string house_address = <span class="string">&quot;&quot;</span>;</span><br><span class="line">	<span class="type">bool</span> flag = <span class="literal">false</span>;<span class="comment">//判断是否已经添加信息</span></span><br><span class="line">	concats* next = <span class="literal">nullptr</span>;<span class="comment">//下一个节点的地址</span></span><br><span class="line"></span><br><span class="line">&#125;concats;</span><br><span class="line"></span><br><span class="line"><span class="comment">//添加联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">add</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp = <span class="keyword">new</span> concats;</span><br><span class="line">	tmp-&gt;flag = <span class="literal">true</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入姓名：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入电话号码：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;phone_num;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入性别：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;gender;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入家庭地址：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; tmp-&gt;house_address;</span><br><span class="line">	<span class="keyword">while</span> (test_concats-&gt;next != <span class="literal">nullptr</span>)<span class="comment">//找出链表的最后的一个元素</span></span><br><span class="line">	&#123;</span><br><span class="line">		test_concats = test_concats-&gt;next;</span><br><span class="line">	&#125;</span><br><span class="line">	test_concats-&gt;next = tmp;<span class="comment">//添加新元素到队列中</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//显示联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != <span class="string">&quot;&quot;</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; test_concats-&gt;name &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;phone_num &lt;&lt; <span class="string">&quot;\t&quot;</span></span><br><span class="line">				&lt;&lt; test_concats-&gt;gender &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;house_address &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//删除联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">deletes</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要删除的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	concats* last_concats = <span class="keyword">new</span> concats;<span class="comment">// 辅助节点，假设有节点a,b,c,要删除节点b,则需要将c的地址传递给a.next，任何delete（c）</span></span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != name)</span><br><span class="line">		&#123;</span><br><span class="line">			last_concats = test_concats;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			last_concats-&gt;next = test_concats-&gt;next;</span><br><span class="line">			<span class="built_in">delete</span>(test_concats);</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查询联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">query</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要查询的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name != name)</span><br><span class="line">		&#123;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; test_concats-&gt;name &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;phone_num &lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;gender</span><br><span class="line">				&lt;&lt; <span class="string">&quot;\t&quot;</span> &lt;&lt; test_concats-&gt;house_address &lt;&lt; std::endl;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//修改联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">edit</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp = <span class="keyword">new</span> concats;</span><br><span class="line">	std::string name;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;请输入你要修改的联系人的名字：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cin &gt;&gt; name;</span><br><span class="line">	<span class="keyword">while</span> (test_concats != <span class="literal">nullptr</span> &amp;&amp; test_concats-&gt;flag == <span class="literal">true</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (test_concats-&gt;name == name)</span><br><span class="line">		&#123;</span><br><span class="line">			std::cout &lt;&lt; <span class="string">&quot;请输入新的手机号码：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">			std::cin &gt;&gt; test_concats-&gt;phone_num;</span><br><span class="line">			std::cout &lt;&lt; <span class="string">&quot;请输入新的家庭地址：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">			std::cin &gt;&gt; test_concats-&gt;house_address;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			test_concats = test_concats-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;很抱歉，未找到该联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//清空联系人</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">clear</span><span class="params">(concats* test_concats)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	concats* tmp;</span><br><span class="line">	<span class="keyword">while</span> (test_concats-&gt;next != <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		tmp = test_concats-&gt;next;</span><br><span class="line">		test_concats-&gt;next = (test_concats-&gt;next)-&gt;next;<span class="comment">//有问题</span></span><br><span class="line">		<span class="built_in">delete</span>(tmp);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">//创建链表，第一个元素为链表头，不存储任何联系人信息，但是flag设置为true；</span></span><br><span class="line">	concats* test_concats = <span class="keyword">new</span> concats;</span><br><span class="line">	test_concats-&gt;flag = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">operations</span> &#123; add_concats = <span class="number">1</span>, display_concats, delete_concats, query_concats, edit_concats, clear_concats, quit &#125;; <span class="comment">// 定义枚举类型operations</span></span><br><span class="line">	<span class="type">int</span> choice;</span><br><span class="line">	<span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;******************************&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;请输入您的选择：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;1.添加联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;2.显示所有联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;3.删除联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;4.查询联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;5.编辑联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;6.清空联系人&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;0.退出菜单&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;******************************&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		std::cin &gt;&gt; choice;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">switch</span> (choice)</span><br><span class="line">		&#123;</span><br><span class="line">		<span class="keyword">case</span> add_concats:</span><br><span class="line">			<span class="built_in">add</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> display_concats:</span><br><span class="line">			<span class="built_in">display</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> delete_concats:</span><br><span class="line">			<span class="built_in">deletes</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> query_concats:</span><br><span class="line">			<span class="built_in">query</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> edit_concats:</span><br><span class="line">			<span class="built_in">edit</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> clear_concats:</span><br><span class="line">			<span class="built_in">clear</span>(test_concats);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> quit:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>“&quot;c++&quot;</category>
+        <category>练习</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>练习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建个人博客遇到的问题</title>
+    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
+<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
+<p>deploy:</p>
+<p> type: git</p>
+<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
+<p> branch: master</p>
+<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
+</blockquote>
+<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
+<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
+<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
+<p>查看镜像：<code>npm get registry</code></p>
+</blockquote>
+<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
+<p>在front-matter<code>中添加</code>description，如：</p>
+<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
+</blockquote>
+<blockquote>
+<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
+</blockquote>
+<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
+<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
+<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>函数与指针</title>
     <url>/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/</url>
     <content><![CDATA[<h5 id="使用函数计算数组大小"><a href="#使用函数计算数组大小" class="headerlink" title="使用函数计算数组大小"></a>使用函数计算数组大小</h5><blockquote>
@@ -253,41 +345,6 @@
       <tags>
         <tag>笔记</tag>
         <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>搭建个人博客遇到的问题</title>
-    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
-<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
-<p>deploy:</p>
-<p> type: git</p>
-<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
-<p> branch: master</p>
-<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
-</blockquote>
-<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
-<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
-<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
-<p>查看镜像：<code>npm get registry</code></p>
-</blockquote>
-<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
-<p>在front-matter<code>中添加</code>description，如：</p>
-<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
-</blockquote>
-<blockquote>
-<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
-</blockquote>
-<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
-<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
-<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
       </tags>
   </entry>
 </search>
