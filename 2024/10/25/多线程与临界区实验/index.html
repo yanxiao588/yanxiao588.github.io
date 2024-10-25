@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/gitpict.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.21.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":true,"height":200},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="操作系统的实验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程与临界区实验">
+<meta property="og:url" content="http://example.com/2024/10/25/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="yanxiao">
+<meta property="og:description" content="操作系统的实验">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-10-25T12:42:34.000Z">
+<meta property="article:modified_time" content="2024-10-25T13:24:41.198Z">
+<meta property="article:author" content="yanxiao">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="操作系统">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2024/10/25/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%AE%9E%E9%AA%8C/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/10/25/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%AE%9E%E9%AA%8C/","path":"2024/10/25/多线程与临界区实验/","title":"多线程与临界区实验"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>多线程与临界区实验 | yanxiao</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">yanxiao</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">一个小白的笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">题目一</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E4%BA%8C"><span class="nav-number">2.</span> <span class="nav-text">题目二</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yanxiao"
+      src="/images/touxiang.jpg">
+  <p class="site-author-name" itemprop="name">yanxiao</p>
+  <div class="site-description" itemprop="description">Just do it!</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yanxiao588" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yanxiao588" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ilove1949101@163.com" title="E-Mail → mailto:ilove1949101@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/25/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang.jpg">
+      <meta itemprop="name" content="yanxiao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yanxiao">
+      <meta itemprop="description" content="Just do it!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="多线程与临界区实验 | yanxiao">
+      <meta itemprop="description" content="操作系统的实验">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          多线程与临界区实验
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-10-25 20:42:34 / 修改时间：21:24:41" itemprop="dateCreated datePublished" datetime="2024-10-25T20:42:34+08:00">2024-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">操作系统的实验</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h5 id="题目一"><a href="#题目一" class="headerlink" title="题目一"></a>题目一</h5><blockquote>
+<p>Mary和Sally是亲姐妹，她们有一个共同的银行账户，她们可以分别到ATM机取款；爸爸，妈妈，奶奶，爷爷，舅舅也可以分别到ATM机给银行账户存钱。设账户的初始余额为10元。爸爸，妈妈，奶奶，爷爷，舅舅每次分别存入10，20，30，40，50元，每个人分别存款2次。Mary和Sally每次分别取50和100元，每个人分别取款2次。存款和取款的顺序是随机的。假设Mary和Sally的银行账户是可借记的，即当余额少于取款额时，仍旧能够取款成功。利用临界区(Windows系统)或者mutex信号量(Linux系统)编制程序来模拟上述存取款过程，在主程序结束时将账户的最后余额输出</p>
+</blockquote>
+<blockquote>
+<p>思路：</p>
+<ul>
+<li><p>定义信号量数组：HANDLE array_handel_sema[14] 和 HANDLE array_handel_t[14] ;</p>
+</li>
+<li><p>创建结构体charactice来存储每个人信息（存款&#x2F;取款，金额，名字等）</p>
+</li>
+<li><p>使用结构体来THREAD_PARAMS, * PTHREAD_PARAMS来传参</p>
+</li>
+<li><p>初始化结构体charactice，并创建数组将每个charactice存放进去</p>
+</li>
+<li><p>获得一个打乱的数组array，数组里面的值为0-6,也是charactice的索引</p>
+</li>
+<li><p>根据每个人是存款还是取款，创建线程时选择对应的函数</p>
+</li>
+<li><p>账户余额放在临界区中</p>
+</li>
+<li><p>每次存款&#x2F;取款线程结束后释放下一个线程</p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>源代码：</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">CRITICAL_SECTION cs;</span><br><span class="line">HANDLE array_handel_sema[<span class="number">14</span>] ;</span><br><span class="line">HANDLE <span class="type">array_handel_t</span>[<span class="number">14</span>] ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义结构体</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	<span class="type">int</span> index;<span class="comment">//用索引来区分每一个人</span></span><br><span class="line">	<span class="type">int</span> balance;<span class="comment">//表示存/取的钱</span></span><br><span class="line">	<span class="type">int</span> type; <span class="comment">//0表示存钱，1表示取钱</span></span><br><span class="line">&#125;charactice;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="type">int</span> index;</span><br><span class="line">	<span class="type">int</span>* account;</span><br><span class="line">	charactice charc;	</span><br><span class="line">&#125;THREAD_PARAMS, * PTHREAD_PARAMS;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Deposit</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice c = pParams-&gt;charc;</span><br><span class="line">	<span class="type">int</span>* account = pParams-&gt;account;</span><br><span class="line">	<span class="type">int</span> index = pParams-&gt;index;			</span><br><span class="line">	<span class="built_in">WaitForSingleObject</span>(array_handel_sema[index], INFINITE); <span class="comment">// 等待信号量 sema</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">EnterCriticalSection</span>(&amp;cs);</span><br><span class="line">	(*account) += c.balance;</span><br><span class="line">	<span class="built_in">LeaveCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Transaction &quot;</span> &lt;&lt; index + <span class="number">1</span> &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; c.name &lt;&lt; <span class="string">&quot; deposit &quot;</span> &lt;&lt; c.balance;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot; current account balance is &quot;</span> &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (index != <span class="number">13</span>)</span><br><span class="line">	<span class="built_in">ReleaseSemaphore</span>(array_handel_sema[(index + <span class="number">1</span>)], <span class="number">1</span>, <span class="literal">NULL</span>);	<span class="comment">//释放下一个信号量</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> pParams; <span class="comment">// 释放动态分配的内存</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Withdraw</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice c = pParams-&gt;charc;</span><br><span class="line">	<span class="type">int</span>* account = pParams-&gt;account;</span><br><span class="line">	<span class="type">int</span> index = pParams-&gt;index;	</span><br><span class="line">	<span class="built_in">WaitForSingleObject</span>(array_handel_sema[index], INFINITE); <span class="comment">// 等待信号量 sema</span></span><br><span class="line">	<span class="built_in">EnterCriticalSection</span>(&amp;cs);</span><br><span class="line">	(*account) -= c.balance;</span><br><span class="line">	<span class="built_in">LeaveCriticalSection</span>(&amp;cs);</span><br><span class="line">	std::cout  &lt;&lt;<span class="string">&quot;Transaction &quot;</span>&lt;&lt;index<span class="number">+1</span>&lt;&lt;<span class="string">&quot;: &quot;</span> &lt;&lt; c.name &lt;&lt; <span class="string">&quot; withdraw &quot;</span> &lt;&lt; c.balance;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;current account balance is &quot;</span> &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">if</span>(index!=<span class="number">13</span>)</span><br><span class="line">		<span class="built_in">ReleaseSemaphore</span>(array_handel_sema[(index + <span class="number">1</span>)], <span class="number">1</span>, <span class="literal">NULL</span>);	<span class="comment">//释放下一个信号量</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> pParams; <span class="comment">// 释放动态分配的内存</span></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> account = <span class="number">10</span>;</span><br><span class="line">	<span class="type">int</span> array_size = <span class="number">14</span>;</span><br><span class="line">	charactice father = &#123; <span class="string">&quot;father&quot;</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice mother = &#123; <span class="string">&quot;mother&quot;</span>,<span class="number">2</span>,<span class="number">20</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice grandmother = &#123; <span class="string">&quot;grandmother&quot;</span>,<span class="number">3</span>,<span class="number">30</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice grandfather = &#123; <span class="string">&quot;grandfather&quot;</span>,<span class="number">4</span>,<span class="number">40</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice uncle = &#123; <span class="string">&quot;uncle&quot;</span>,<span class="number">5</span>,<span class="number">50</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice Mary = &#123; <span class="string">&quot;Mary&quot;</span>,<span class="number">6</span>,<span class="number">50</span>,<span class="number">1</span> &#125;;</span><br><span class="line">	charactice Sally = &#123; <span class="string">&quot;Sally&quot;</span>,<span class="number">7</span>,<span class="number">100</span>,<span class="number">1</span> &#125;;</span><br><span class="line">	charactice charc[<span class="number">7</span>] = &#123; father ,mother ,grandmother ,grandfather ,uncle ,Mary ,Sally &#125;;</span><br><span class="line">	<span class="built_in">InitializeCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获得一个打乱的数组,存储1-7，并且每个数字出现两次</span></span><br><span class="line">	<span class="type">int</span> array[<span class="number">14</span>];</span><br><span class="line">	<span class="type">int</span> number[<span class="number">7</span>] = &#123; <span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span> &#125;;</span><br><span class="line">	<span class="type">int</span>  j, tmp;</span><br><span class="line">	<span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; array_size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		array[i] = number[i % <span class="number">7</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = array_size - <span class="number">1</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">		j = <span class="built_in">rand</span>() % (array_size);</span><br><span class="line">		tmp = array[i];</span><br><span class="line">		array[i] = array[j];</span><br><span class="line">		array[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="comment">//初始化信号量</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (i == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = <span class="built_in">CreateSemaphore</span>(<span class="literal">NULL</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = <span class="built_in">CreateSemaphore</span>(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Initial account balance is &quot;</span> &lt;&lt; account &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> m = array[i];</span><br><span class="line">		THREAD_PARAMS* arg =<span class="keyword">new</span> THREAD_PARAMS&#123; i,&amp;account,charc[m]&#125;;<span class="comment">//小心数组越界，而且必须动态分配内存</span></span><br><span class="line">			</span><br><span class="line">		<span class="keyword">if</span> (charc[m].type == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="type">array_handel_t</span> [i] = <span class="built_in">CreateThread</span>(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)Deposit, arg, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (charc[m].type == <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="type">array_handel_t</span>[i] = <span class="built_in">CreateThread</span>(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)Withdraw, arg, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">14</span>;i++)</span><br><span class="line">		<span class="built_in">WaitForSingleObject</span>(<span class="type">array_handel_t</span>[i], INFINITE);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">		<span class="built_in">CloseHandle</span>(<span class="type">array_handel_t</span>[i]);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">		<span class="built_in">CloseHandle</span>(array_handel_sema[i]);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">DeleteCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>遇到的问题</strong></p>
+<ul>
+<li>信号量完全可以用一个全局数组来存储</li>
+<li>用做参数的结构体在初始化的时候建议使用动态分配，这样可以在使用完之后释放掉内存</li>
+</ul>
+</blockquote>
+<h5 id="题目二"><a href="#题目二" class="headerlink" title="题目二"></a>题目二</h5><blockquote>
+<p>要求跟题目一的要求一样，唯一区别是：在本题中假设Mary和Sally的银行账户是不可借记的，即当余额少于取款额时，不能取款，取款线程需要阻塞等待直到账户有足够的钱。</p>
+</blockquote>
+<blockquote>
+<p>思路：在题目一的基础上进行改进</p>
+<ul>
+<li>定义一个结构体来表示阻塞队列（具体看代码注释），但是阻塞队列需要初始化为全局变量，这样在函数内部才能对其内容进行修改</li>
+<li>阻塞队列进行操作比如增删结点时需要在临界区内进行</li>
+<li>存款函数：每次取款后都检查一下阻塞队列中的第一个元素（不是队头），看它要取款的金额是否小于账户余额，如果大于，则释放接下来的信号量（比如本次存款等待的信号量为sema5,则释放sema6）；否则，释放取款的信号量，并存储存款接下来的信号量（结点中存储着对应的index）（比如取款等待的信号量为sema2，则释放sema2，并存储sema6）</li>
+<li>取款函数：先判断是否能够取钱，能够取款则正常释放下一个信号量，否则加入阻塞队列中，并进行阻塞（比如等待的信号量为sema2，则在将信息加入阻塞队列后再次使用**WaitForSingleObject(array_handel_sema2, INFINITE);**让其停在这里，等到取款函数释放sema2才继续执行下去）</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>源代码：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line">#include &lt;Windows.h&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line">CRITICAL_SECTION cs;</span><br><span class="line">HANDLE array_handel_sema[14];</span><br><span class="line">HANDLE array_handel_t[14];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//定义结构体</span><br><span class="line">typedef struct &#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	int index;//用索引来区分每一个人</span><br><span class="line">	int balance;//表示存/取的钱</span><br><span class="line">	int type; //0表示存钱，1表示取钱</span><br><span class="line">&#125;charactice;</span><br><span class="line"></span><br><span class="line">typedef struct queue &#123;</span><br><span class="line">	int flag;//-1表示队头，0表示该节点不是从阻塞队列中取出来的，1表示是从阻塞队列中取出</span><br><span class="line">	int index;//存储索引，-1则是队头</span><br><span class="line">	int index_next;//存储原本没有从阻塞队列中恢复出来节点应该激活的信号量</span><br><span class="line">	charactice* charc;</span><br><span class="line">	queue* next;//指向下一个阻塞结点</span><br><span class="line">&#125;queue, * queue_ptr;                 //应该作为全局变量</span><br><span class="line"></span><br><span class="line">queue_ptr block_queue =new queue &#123; -1,-1,-1,NULL,nullptr &#125;;//初始化阻塞队列，且必须动态分配</span><br><span class="line"></span><br><span class="line">typedef struct &#123;</span><br><span class="line">	int index;</span><br><span class="line">	int* account;</span><br><span class="line">	charactice* charc;	</span><br><span class="line">&#125;THREAD_PARAMS, * PTHREAD_PARAMS;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//存钱</span><br><span class="line">void Deposit(LPVOID lpParam)</span><br><span class="line">&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice* c = pParams-&gt;charc;</span><br><span class="line">	int* account = pParams-&gt;account;</span><br><span class="line">	int index = pParams-&gt;index;</span><br><span class="line">	</span><br><span class="line">	WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">	EnterCriticalSection(&amp;cs);</span><br><span class="line">	(*account) += c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; deposit &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	//存完钱后看阻塞队列中的结点能否取钱</span><br><span class="line">	if (block_queue-&gt;next != nullptr)</span><br><span class="line">	&#123;</span><br><span class="line">		if (block_queue-&gt;next-&gt;charc-&gt;balance &lt;= (*account))</span><br><span class="line">		&#123;</span><br><span class="line">			</span><br><span class="line">			int i = block_queue-&gt;next-&gt;index;			</span><br><span class="line">			block_queue-&gt;next-&gt;index_next = index+1;</span><br><span class="line">			block_queue-&gt;next-&gt;flag = 1;</span><br><span class="line">			delete pParams; // 释放动态分配的内存</span><br><span class="line">			ReleaseSemaphore(array_handel_sema[i], 1, NULL);	//释放阻塞结点的信号量</span><br><span class="line">			</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	if (index != 13)</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">	delete pParams; // 释放动态分配的内存</span><br><span class="line">	return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//取钱</span><br><span class="line">void Withdraw(LPVOID lpParam)</span><br><span class="line">&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice* c = pParams-&gt;charc;</span><br><span class="line">	int* account = pParams-&gt;account;</span><br><span class="line">	int index = pParams-&gt;index;</span><br><span class="line"></span><br><span class="line">	WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">	if (*account &lt; c-&gt;balance)//判断能否取钱，不能则加入到阻塞队列</span><br><span class="line">	&#123;</span><br><span class="line">		EnterCriticalSection(&amp;cs);</span><br><span class="line">		std::cout  &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; want to withdraw &quot; &lt;&lt; c-&gt;balance&lt;&lt;&quot; but account is not enough,waiting...&quot;&lt;&lt;std::endl;</span><br><span class="line"></span><br><span class="line">		queue_ptr tmp_ptr = block_queue;</span><br><span class="line">		queue_ptr tmp =new queue &#123;0, index,-1,c ,nullptr &#125;;</span><br><span class="line">		while (tmp_ptr-&gt;next!=nullptr)//感觉有问题</span><br><span class="line">		&#123;</span><br><span class="line">			tmp_ptr = tmp_ptr-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line">		tmp_ptr-&gt;next = tmp;</span><br><span class="line">		LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">		if (index != 13)</span><br><span class="line">			ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">		WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">		EnterCriticalSection(&amp;cs);</span><br><span class="line">		(*account) -= c-&gt;balance;</span><br><span class="line">		std::cout &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; withdraw &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">		std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[block_queue-&gt;next-&gt;index_next], 1, NULL);	//释放下一个信号量</span><br><span class="line">		block_queue-&gt;next = block_queue-&gt;next-&gt;next;//将结点从队列中移除</span><br><span class="line">		LeaveCriticalSection(&amp;cs);</span><br><span class="line">		</span><br><span class="line">		delete pParams; // 释放动态分配的内存</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//既不是阻塞队列中取出来的，余额充足</span><br><span class="line">	EnterCriticalSection(&amp;cs);</span><br><span class="line">	(*account) -= c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot;Transaction &quot;  &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; withdraw &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	if (index != 13)</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">	delete pParams; // 释放动态分配的内存</span><br><span class="line">	return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	int account = 10;</span><br><span class="line">	int array_size = 14;</span><br><span class="line">	charactice father = &#123; &quot;father&quot;,1,10,0 &#125;;</span><br><span class="line">	charactice mother = &#123; &quot;mother&quot;,2,20,0 &#125;;</span><br><span class="line">	charactice grandmother = &#123; &quot;grandmother&quot;,3,30,0 &#125;;</span><br><span class="line">	charactice grandfather = &#123; &quot;grandfather&quot;,4,40,0 &#125;;</span><br><span class="line">	charactice uncle = &#123; &quot;uncle&quot;,5,50,0 &#125;;</span><br><span class="line">	charactice Mary = &#123; &quot;Mary&quot;,6,50,1 &#125;;</span><br><span class="line">	charactice Sally = &#123; &quot;Sally&quot;,7,100,1 &#125;;</span><br><span class="line">	charactice charc[7] = &#123; father ,mother ,grandmother ,grandfather ,uncle ,Mary ,Sally &#125;;</span><br><span class="line">	InitializeCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	//获得一个打乱的数组,存储1-7，并且每个数字出现两次</span><br><span class="line">	int array[14];</span><br><span class="line">	int number[7] = &#123; 0,1,2,3,4,5,6 &#125;;</span><br><span class="line">	int  j, tmp;</span><br><span class="line">	srand(time(NULL));</span><br><span class="line">	for (int i = 0; i &lt; array_size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		array[i] = number[i % 7];</span><br><span class="line">	&#125;</span><br><span class="line">	for (int i = array_size - 1; i &gt; 0; i--) &#123;</span><br><span class="line">		j = rand() % (array_size);</span><br><span class="line">		tmp = array[i];</span><br><span class="line">		array[i] = array[j];</span><br><span class="line">		array[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	//初始化信号量</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		if (i == 0)</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = CreateSemaphore(NULL, 1, 1, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		else</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = CreateSemaphore(NULL, 0, 1, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; &quot;Initial account balance is &quot; &lt;&lt; account &lt;&lt; std::endl;</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		int m = array[i];</span><br><span class="line">		THREAD_PARAMS* arg = new THREAD_PARAMS&#123; i,&amp;account,&amp;charc[m] &#125;;//小心数组越界，而且必须动态分配内存</span><br><span class="line"></span><br><span class="line">		if (charc[m].type == 0) &#123;</span><br><span class="line">			array_handel_t[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Deposit, arg, 0, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		if (charc[m].type == 1) &#123;</span><br><span class="line">			array_handel_t[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Withdraw, arg, 0, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		WaitForSingleObject(array_handel_t[i], INFINITE);</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		CloseHandle(array_handel_t[i]);</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		CloseHandle(array_handel_sema[i]);</span><br><span class="line"></span><br><span class="line">	DeleteCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：因为存款函数每次存款结束后只检查阻塞队列的第一个结点，假如第一第二个结点取款总和小于账户余额，则这种方法存在瑕疵</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/20/cpp%E7%BB%83%E4%B9%A0/" rel="prev" title="cpp练习">
+                  <i class="fa fa-angle-left"></i> cpp练习
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">yanxiao</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">6k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">21 分钟</span>
+  </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

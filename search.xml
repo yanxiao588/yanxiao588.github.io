@@ -37,101 +37,6 @@
       </tags>
   </entry>
   <entry>
-    <title>cpp笔记</title>
-    <url>/2024/10/19/cpp%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[<h5 id="引用传递"><a href="#引用传递" class="headerlink" title="引用传递"></a>引用传递</h5><blockquote>
-<ul>
-<li><p>含义：形参相当于是实参的“别名”，对形参的操作其实就是对实参的操作；而不是像按值传递那样，形参是实参的拷贝</p>
-<p>类比一个人，无论是他的正式名字还是别名，指的都是同一个人</p>
-<p>注意：必须初始化，且初始化后不能改变（区分赋值）</p>
-</li>
-<li><p>示例：</p>
-</li>
-</ul>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="comment">//函数传参:地址传递</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap1</span><span class="params">(<span class="type">int</span>* a, <span class="type">int</span>* b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> tmp;</span><br><span class="line">	tmp = (*a);</span><br><span class="line">	(*a) = (*b);</span><br><span class="line">	(*b) = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数传参：引用传递</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap2</span><span class="params">(<span class="type">int</span>&amp; c, <span class="type">int</span>&amp; d)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> tmp;</span><br><span class="line">	tmp = c;</span><br><span class="line">	c = d;</span><br><span class="line">	d = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt;b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line">	<span class="built_in">swap1</span>(&amp;a, &amp;b);<span class="comment">//按地址传递</span></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;swap1后：&quot;</span>  &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt; b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line">	<span class="built_in">swap2</span>(a, b);<span class="comment">//引用传递</span></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;swap2后：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt; b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>底层原理：</p>
-<p>实际上是由一个指针实现的</p>
-<p>示例：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test</span><span class="params">(<span class="type">int</span> &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    a++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>底层原理相当于：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test_real</span><span class="params">(<span class="type">int</span> * <span class="type">const</span> a)</span> <span class="comment">//这个指针的值不可变，但是指向的内容可以改变</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	(*a)++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</blockquote>
-<h5 id="static关键字"><a href="#static关键字" class="headerlink" title="static关键字"></a>static关键字</h5><blockquote>
-<p>含义：static 表示将内容存入静态内存区域，可以修饰变量，函数</p>
-<p>当static 在函数内修饰变量，可以将变量的生命周期延长至整个程序结束，示例如下：</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	 <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span>* result1 = <span class="built_in">test1</span>();</span><br><span class="line">	<span class="type">int</span>* result2 = <span class="built_in">test2</span>();</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">30</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;test&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="comment">//打印这些是为了留多点时间给系统回收空间不然执行太快，test2里面的num在执行完函数来不及回收空间</span></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; *result1 &lt;&lt; std::endl;  <span class="comment">//结果为0</span></span><br><span class="line">	std::cout &lt;&lt; *result2 &lt;&lt; std::endl;  <span class="comment">//结果为-858993460</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-</blockquote>
-<h5 id="c-内存分区"><a href="#c-内存分区" class="headerlink" title="c++内存分区"></a>c++内存分区</h5><blockquote>
-<ul>
-<li>代码区：存放函数体的二进制代码，由操作系统管理</li>
-<li>全局区：存放全局变量，静态变量，常量</li>
-<li>栈区：由编译器自动分配释放，存放函数的参数值，局部变量等</li>
-<li>堆区：由程序员分配释放，程序结束后系统回收</li>
-</ul>
-</blockquote>
-<blockquote>
-<p><strong>程序执行前</strong></p>
-<p>在编译后，生成.exe可执行文件，此时未执行区域分两个区域：</p>
-<ul>
-<li><p>代码区：</p>
-<ul>
-<li>存放cpu指令</li>
-<li>代码区是共享的，因为程序可以被多次执行，但只需要存放一份代码进行</li>
-<li>代码区是只读的，防止意外修改了指令</li>
-</ul>
-</li>
-<li><p>全局区</p>
-<ul>
-<li><p>存放全局变量和静态变量</p>
-</li>
-<li><p>也包含了常量区，字符串常量和其他常量也存放在这</p>
-</li>
-<li><p>程序结束后操作系统释放</p>
-</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<h5 id="函数的默认参数"><a href="#函数的默认参数" class="headerlink" title="函数的默认参数"></a>函数的默认参数</h5><blockquote>
-<ul>
-<li><p>当某个参数使用了默认值后，其后面的参数也必须使用默认值，下面是<strong>错误</strong>的示例</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c)</span></span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>当函数的声明已经有默认值了，函数的定义就不能有默认值，反过来也一样，下面是<strong>错误</strong>的示例</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-</blockquote>
-<h5 id="函数的重载"><a href="#函数的重载" class="headerlink" title="函数的重载"></a>函数的重载</h5><blockquote>
-<ul>
-<li>作用：函数名可以相同，提高复用性</li>
-<li>条件<ul>
-<li>同一作用域下</li>
-<li>函数名相同</li>
-<li>函数参数类型不同或者参数个数不同或者顺序不同</li>
-</ul>
-</li>
-<li>注意事项：函数返回值不同不能作为重载条件</li>
-</ul>
-</blockquote>
-]]></content>
-      <categories>
-        <category>“&quot;c++&quot;</category>
-        <category>笔记</category>
-      </categories>
-      <tags>
-        <tag>笔记</tag>
-        <tag>c++</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>sql-ex习题</title>
     <url>/2024/10/18/sql-ex%E4%B9%A0%E9%A2%98/</url>
     <content><![CDATA[<h3 id="题干"><a href="#题干" class="headerlink" title="题干"></a>题干</h3><ul>
@@ -242,41 +147,6 @@
       </tags>
   </entry>
   <entry>
-    <title>搭建个人博客遇到的问题</title>
-    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
-<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
-<p>deploy:</p>
-<p> type: git</p>
-<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
-<p> branch: master</p>
-<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
-</blockquote>
-<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
-<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
-<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
-<p>查看镜像：<code>npm get registry</code></p>
-</blockquote>
-<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
-<p>在front-matter<code>中添加</code>description，如：</p>
-<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
-</blockquote>
-<blockquote>
-<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
-</blockquote>
-<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
-<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
-<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>函数与指针</title>
     <url>/2024/10/18/%E5%87%BD%E6%95%B0%E4%B8%8E%E6%8C%87%E9%92%88/</url>
     <content><![CDATA[<h5 id="使用函数计算数组大小"><a href="#使用函数计算数组大小" class="headerlink" title="使用函数计算数组大小"></a>使用函数计算数组大小</h5><blockquote>
@@ -295,6 +165,184 @@
       <tags>
         <tag>笔记</tag>
         <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>cpp笔记</title>
+    <url>/2024/10/19/cpp%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h5 id="引用传递"><a href="#引用传递" class="headerlink" title="引用传递"></a>引用传递</h5><blockquote>
+<ul>
+<li><p>含义：形参相当于是实参的“别名”，对形参的操作其实就是对实参的操作；而不是像按值传递那样，形参是实参的拷贝</p>
+<p>类比一个人，无论是他的正式名字还是别名，指的都是同一个人</p>
+<p>注意：必须初始化，且初始化后不能改变（区分赋值）</p>
+</li>
+<li><p>示例：</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="comment">//函数传参:地址传递</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap1</span><span class="params">(<span class="type">int</span>* a, <span class="type">int</span>* b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> tmp;</span><br><span class="line">	tmp = (*a);</span><br><span class="line">	(*a) = (*b);</span><br><span class="line">	(*b) = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//函数传参：引用传递</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap2</span><span class="params">(<span class="type">int</span>&amp; c, <span class="type">int</span>&amp; d)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span> tmp;</span><br><span class="line">	tmp = c;</span><br><span class="line">	c = d;</span><br><span class="line">	d = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> a = <span class="number">1</span>;</span><br><span class="line">	<span class="type">int</span> b = <span class="number">2</span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt;b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line">	<span class="built_in">swap1</span>(&amp;a, &amp;b);<span class="comment">//按地址传递</span></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;swap1后：&quot;</span>  &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt; b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line">	<span class="built_in">swap2</span>(a, b);<span class="comment">//引用传递</span></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;swap2后：&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;a:&quot;</span> &lt;&lt; a &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;b:&quot;</span> &lt;&lt; b &lt;&lt; std::endl;</span><br><span class="line">	std::cout &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>底层原理：</p>
+<p>实际上是由一个指针实现的</p>
+<p>示例：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test</span><span class="params">(<span class="type">int</span> &amp;a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    a++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>底层原理相当于：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">test_real</span><span class="params">(<span class="type">int</span> * <span class="type">const</span> a)</span> <span class="comment">//这个指针的值不可变，但是指向的内容可以改变</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	(*a)++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+<h5 id="static关键字"><a href="#static关键字" class="headerlink" title="static关键字"></a>static关键字</h5><blockquote>
+<p>含义：static 表示将内容存入静态内存区域，可以修饰变量，函数</p>
+<p>当static 在函数内修饰变量，可以将变量的生命周期延长至整个程序结束，示例如下：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;iostream&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="type">static</span> <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span>* <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	 <span class="type">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">return</span> &amp;num;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="type">int</span>* result1 = <span class="built_in">test1</span>();</span><br><span class="line">	<span class="type">int</span>* result2 = <span class="built_in">test2</span>();</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">30</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		std::cout &lt;&lt; <span class="string">&quot;test&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">		<span class="comment">//打印这些是为了留多点时间给系统回收空间不然执行太快，test2里面的num在执行完函数来不及回收空间</span></span><br><span class="line">	&#125;</span><br><span class="line">	std::cout &lt;&lt; *result1 &lt;&lt; std::endl;  <span class="comment">//结果为0</span></span><br><span class="line">	std::cout &lt;&lt; *result2 &lt;&lt; std::endl;  <span class="comment">//结果为-858993460</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</blockquote>
+<h5 id="c-内存分区"><a href="#c-内存分区" class="headerlink" title="c++内存分区"></a>c++内存分区</h5><blockquote>
+<ul>
+<li>代码区：存放函数体的二进制代码，由操作系统管理</li>
+<li>全局区：存放全局变量，静态变量，常量</li>
+<li>栈区：由编译器自动分配释放，存放函数的参数值，局部变量等</li>
+<li>堆区：由程序员分配释放，程序结束后系统回收</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><strong>程序执行前</strong></p>
+<p>在编译后，生成.exe可执行文件，此时未执行区域分两个区域：</p>
+<ul>
+<li><p>代码区：</p>
+<ul>
+<li>存放cpu指令</li>
+<li>代码区是共享的，因为程序可以被多次执行，但只需要存放一份代码进行</li>
+<li>代码区是只读的，防止意外修改了指令</li>
+</ul>
+</li>
+<li><p>全局区</p>
+<ul>
+<li><p>存放全局变量和静态变量</p>
+</li>
+<li><p>也包含了常量区，字符串常量和其他常量也存放在这</p>
+</li>
+<li><p>程序结束后操作系统释放</p>
+</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h5 id="函数的默认参数"><a href="#函数的默认参数" class="headerlink" title="函数的默认参数"></a>函数的默认参数</h5><blockquote>
+<ul>
+<li><p>当某个参数使用了默认值后，其后面的参数也必须使用默认值，下面是<strong>错误</strong>的示例</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c)</span></span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>当函数的声明已经有默认值了，函数的定义就不能有默认值，反过来也一样，下面是<strong>错误</strong>的示例</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">1</span>,<span class="type">int</span> c=<span class="number">2</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+<h5 id="函数的重载"><a href="#函数的重载" class="headerlink" title="函数的重载"></a>函数的重载</h5><blockquote>
+<ul>
+<li><p>作用：函数名可以相同，提高复用性</p>
+</li>
+<li><p>条件</p>
+<ul>
+<li>同一作用域下</li>
+<li>函数名相同</li>
+<li>函数参数类型不同或者参数个数不同或者顺序不同</li>
+</ul>
+</li>
+<li><p>注意事项：</p>
+<ul>
+<li><p>函数返回值不同不能作为重载条件</p>
+</li>
+<li><p>参数为引用类型时：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># include &quot;iostream&quot;</span><br><span class="line"></span><br><span class="line">void func(int &amp;a)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout&lt;&lt;&quot;func1&quot;&lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br><span class="line">void func(const int &amp;a)</span><br><span class="line">&#123;</span><br><span class="line">    std::cout&lt;&lt;&quot;func1&quot;&lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int a=9;</span><br><span class="line">    func(a);//func1</span><br><span class="line">    func(9);//func2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>参数中有默认值时有可能出现二义性，尽量避免，下面就出现了二义性</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a,<span class="type">int</span> b=<span class="number">9</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;func1&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fun</span><span class="params">(<span class="type">int</span> a)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    std::cout&lt;&lt;<span class="string">&quot;func2&quot;</span>&lt;&lt;std::endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> c=<span class="number">9</span>;</span><br><span class="line">    <span class="built_in">fun</span>(c);<span class="comment">//出现了二义性</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>“&quot;c++&quot;</category>
+        <category>笔记</category>
+      </categories>
+      <tags>
+        <tag>笔记</tag>
+        <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多线程与临界区实验</title>
+    <url>/2024/10/25/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%AE%9E%E9%AA%8C/</url>
+    <content><![CDATA[<h5 id="题目一"><a href="#题目一" class="headerlink" title="题目一"></a>题目一</h5><blockquote>
+<p>Mary和Sally是亲姐妹，她们有一个共同的银行账户，她们可以分别到ATM机取款；爸爸，妈妈，奶奶，爷爷，舅舅也可以分别到ATM机给银行账户存钱。设账户的初始余额为10元。爸爸，妈妈，奶奶，爷爷，舅舅每次分别存入10，20，30，40，50元，每个人分别存款2次。Mary和Sally每次分别取50和100元，每个人分别取款2次。存款和取款的顺序是随机的。假设Mary和Sally的银行账户是可借记的，即当余额少于取款额时，仍旧能够取款成功。利用临界区(Windows系统)或者mutex信号量(Linux系统)编制程序来模拟上述存取款过程，在主程序结束时将账户的最后余额输出</p>
+</blockquote>
+<blockquote>
+<p>思路：</p>
+<ul>
+<li><p>定义信号量数组：HANDLE array_handel_sema[14] 和 HANDLE array_handel_t[14] ;</p>
+</li>
+<li><p>创建结构体charactice来存储每个人信息（存款&#x2F;取款，金额，名字等）</p>
+</li>
+<li><p>使用结构体来THREAD_PARAMS, * PTHREAD_PARAMS来传参</p>
+</li>
+<li><p>初始化结构体charactice，并创建数组将每个charactice存放进去</p>
+</li>
+<li><p>获得一个打乱的数组array，数组里面的值为0-6,也是charactice的索引</p>
+</li>
+<li><p>根据每个人是存款还是取款，创建线程时选择对应的函数</p>
+</li>
+<li><p>账户余额放在临界区中</p>
+</li>
+<li><p>每次存款&#x2F;取款线程结束后释放下一个线程</p>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>源代码：</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">CRITICAL_SECTION cs;</span><br><span class="line">HANDLE array_handel_sema[<span class="number">14</span>] ;</span><br><span class="line">HANDLE <span class="type">array_handel_t</span>[<span class="number">14</span>] ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义结构体</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	<span class="type">int</span> index;<span class="comment">//用索引来区分每一个人</span></span><br><span class="line">	<span class="type">int</span> balance;<span class="comment">//表示存/取的钱</span></span><br><span class="line">	<span class="type">int</span> type; <span class="comment">//0表示存钱，1表示取钱</span></span><br><span class="line">&#125;charactice;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="type">int</span> index;</span><br><span class="line">	<span class="type">int</span>* account;</span><br><span class="line">	charactice charc;	</span><br><span class="line">&#125;THREAD_PARAMS, * PTHREAD_PARAMS;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Deposit</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice c = pParams-&gt;charc;</span><br><span class="line">	<span class="type">int</span>* account = pParams-&gt;account;</span><br><span class="line">	<span class="type">int</span> index = pParams-&gt;index;			</span><br><span class="line">	<span class="built_in">WaitForSingleObject</span>(array_handel_sema[index], INFINITE); <span class="comment">// 等待信号量 sema</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">EnterCriticalSection</span>(&amp;cs);</span><br><span class="line">	(*account) += c.balance;</span><br><span class="line">	<span class="built_in">LeaveCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Transaction &quot;</span> &lt;&lt; index + <span class="number">1</span> &lt;&lt; <span class="string">&quot;: &quot;</span> &lt;&lt; c.name &lt;&lt; <span class="string">&quot; deposit &quot;</span> &lt;&lt; c.balance;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot; current account balance is &quot;</span> &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (index != <span class="number">13</span>)</span><br><span class="line">	<span class="built_in">ReleaseSemaphore</span>(array_handel_sema[(index + <span class="number">1</span>)], <span class="number">1</span>, <span class="literal">NULL</span>);	<span class="comment">//释放下一个信号量</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> pParams; <span class="comment">// 释放动态分配的内存</span></span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Withdraw</span><span class="params">(LPVOID lpParam)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice c = pParams-&gt;charc;</span><br><span class="line">	<span class="type">int</span>* account = pParams-&gt;account;</span><br><span class="line">	<span class="type">int</span> index = pParams-&gt;index;	</span><br><span class="line">	<span class="built_in">WaitForSingleObject</span>(array_handel_sema[index], INFINITE); <span class="comment">// 等待信号量 sema</span></span><br><span class="line">	<span class="built_in">EnterCriticalSection</span>(&amp;cs);</span><br><span class="line">	(*account) -= c.balance;</span><br><span class="line">	<span class="built_in">LeaveCriticalSection</span>(&amp;cs);</span><br><span class="line">	std::cout  &lt;&lt;<span class="string">&quot;Transaction &quot;</span>&lt;&lt;index<span class="number">+1</span>&lt;&lt;<span class="string">&quot;: &quot;</span> &lt;&lt; c.name &lt;&lt; <span class="string">&quot; withdraw &quot;</span> &lt;&lt; c.balance;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;current account balance is &quot;</span> &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">if</span>(index!=<span class="number">13</span>)</span><br><span class="line">		<span class="built_in">ReleaseSemaphore</span>(array_handel_sema[(index + <span class="number">1</span>)], <span class="number">1</span>, <span class="literal">NULL</span>);	<span class="comment">//释放下一个信号量</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> pParams; <span class="comment">// 释放动态分配的内存</span></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="type">int</span> account = <span class="number">10</span>;</span><br><span class="line">	<span class="type">int</span> array_size = <span class="number">14</span>;</span><br><span class="line">	charactice father = &#123; <span class="string">&quot;father&quot;</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice mother = &#123; <span class="string">&quot;mother&quot;</span>,<span class="number">2</span>,<span class="number">20</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice grandmother = &#123; <span class="string">&quot;grandmother&quot;</span>,<span class="number">3</span>,<span class="number">30</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice grandfather = &#123; <span class="string">&quot;grandfather&quot;</span>,<span class="number">4</span>,<span class="number">40</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice uncle = &#123; <span class="string">&quot;uncle&quot;</span>,<span class="number">5</span>,<span class="number">50</span>,<span class="number">0</span> &#125;;</span><br><span class="line">	charactice Mary = &#123; <span class="string">&quot;Mary&quot;</span>,<span class="number">6</span>,<span class="number">50</span>,<span class="number">1</span> &#125;;</span><br><span class="line">	charactice Sally = &#123; <span class="string">&quot;Sally&quot;</span>,<span class="number">7</span>,<span class="number">100</span>,<span class="number">1</span> &#125;;</span><br><span class="line">	charactice charc[<span class="number">7</span>] = &#123; father ,mother ,grandmother ,grandfather ,uncle ,Mary ,Sally &#125;;</span><br><span class="line">	<span class="built_in">InitializeCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获得一个打乱的数组,存储1-7，并且每个数字出现两次</span></span><br><span class="line">	<span class="type">int</span> array[<span class="number">14</span>];</span><br><span class="line">	<span class="type">int</span> number[<span class="number">7</span>] = &#123; <span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span> &#125;;</span><br><span class="line">	<span class="type">int</span>  j, tmp;</span><br><span class="line">	<span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="literal">NULL</span>));</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; array_size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		array[i] = number[i % <span class="number">7</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = array_size - <span class="number">1</span>; i &gt; <span class="number">0</span>; i--) &#123;</span><br><span class="line">		j = <span class="built_in">rand</span>() % (array_size);</span><br><span class="line">		tmp = array[i];</span><br><span class="line">		array[i] = array[j];</span><br><span class="line">		array[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	<span class="comment">//初始化信号量</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (i == <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = <span class="built_in">CreateSemaphore</span>(<span class="literal">NULL</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = <span class="built_in">CreateSemaphore</span>(<span class="literal">NULL</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Initial account balance is &quot;</span> &lt;&lt; account &lt;&lt; std::endl;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="type">int</span> m = array[i];</span><br><span class="line">		THREAD_PARAMS* arg =<span class="keyword">new</span> THREAD_PARAMS&#123; i,&amp;account,charc[m]&#125;;<span class="comment">//小心数组越界，而且必须动态分配内存</span></span><br><span class="line">			</span><br><span class="line">		<span class="keyword">if</span> (charc[m].type == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="type">array_handel_t</span> [i] = <span class="built_in">CreateThread</span>(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)Deposit, arg, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (charc[m].type == <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="type">array_handel_t</span>[i] = <span class="built_in">CreateThread</span>(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)Withdraw, arg, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">14</span>;i++)</span><br><span class="line">		<span class="built_in">WaitForSingleObject</span>(<span class="type">array_handel_t</span>[i], INFINITE);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">		<span class="built_in">CloseHandle</span>(<span class="type">array_handel_t</span>[i]);</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">14</span>; i++)</span><br><span class="line">		<span class="built_in">CloseHandle</span>(array_handel_sema[i]);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">DeleteCriticalSection</span>(&amp;cs);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>遇到的问题</strong></p>
+<ul>
+<li>信号量完全可以用一个全局数组来存储</li>
+<li>用做参数的结构体在初始化的时候建议使用动态分配，这样可以在使用完之后释放掉内存</li>
+</ul>
+</blockquote>
+<h5 id="题目二"><a href="#题目二" class="headerlink" title="题目二"></a>题目二</h5><blockquote>
+<p>要求跟题目一的要求一样，唯一区别是：在本题中假设Mary和Sally的银行账户是不可借记的，即当余额少于取款额时，不能取款，取款线程需要阻塞等待直到账户有足够的钱。</p>
+</blockquote>
+<blockquote>
+<p>思路：在题目一的基础上进行改进</p>
+<ul>
+<li>定义一个结构体来表示阻塞队列（具体看代码注释），但是阻塞队列需要初始化为全局变量，这样在函数内部才能对其内容进行修改</li>
+<li>阻塞队列进行操作比如增删结点时需要在临界区内进行</li>
+<li>存款函数：每次取款后都检查一下阻塞队列中的第一个元素（不是队头），看它要取款的金额是否小于账户余额，如果大于，则释放接下来的信号量（比如本次存款等待的信号量为sema5,则释放sema6）；否则，释放取款的信号量，并存储存款接下来的信号量（结点中存储着对应的index）（比如取款等待的信号量为sema2，则释放sema2，并存储sema6）</li>
+<li>取款函数：先判断是否能够取钱，能够取款则正常释放下一个信号量，否则加入阻塞队列中，并进行阻塞（比如等待的信号量为sema2，则在将信息加入阻塞队列后再次使用**WaitForSingleObject(array_handel_sema2, INFINITE);**让其停在这里，等到取款函数释放sema2才继续执行下去）</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>源代码：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;time.h&gt;</span><br><span class="line">#include &lt;Windows.h&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line">CRITICAL_SECTION cs;</span><br><span class="line">HANDLE array_handel_sema[14];</span><br><span class="line">HANDLE array_handel_t[14];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//定义结构体</span><br><span class="line">typedef struct &#123;</span><br><span class="line">	std::string name;</span><br><span class="line">	int index;//用索引来区分每一个人</span><br><span class="line">	int balance;//表示存/取的钱</span><br><span class="line">	int type; //0表示存钱，1表示取钱</span><br><span class="line">&#125;charactice;</span><br><span class="line"></span><br><span class="line">typedef struct queue &#123;</span><br><span class="line">	int flag;//-1表示队头，0表示该节点不是从阻塞队列中取出来的，1表示是从阻塞队列中取出</span><br><span class="line">	int index;//存储索引，-1则是队头</span><br><span class="line">	int index_next;//存储原本没有从阻塞队列中恢复出来节点应该激活的信号量</span><br><span class="line">	charactice* charc;</span><br><span class="line">	queue* next;//指向下一个阻塞结点</span><br><span class="line">&#125;queue, * queue_ptr;                 //应该作为全局变量</span><br><span class="line"></span><br><span class="line">queue_ptr block_queue =new queue &#123; -1,-1,-1,NULL,nullptr &#125;;//初始化阻塞队列，且必须动态分配</span><br><span class="line"></span><br><span class="line">typedef struct &#123;</span><br><span class="line">	int index;</span><br><span class="line">	int* account;</span><br><span class="line">	charactice* charc;	</span><br><span class="line">&#125;THREAD_PARAMS, * PTHREAD_PARAMS;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">//存钱</span><br><span class="line">void Deposit(LPVOID lpParam)</span><br><span class="line">&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice* c = pParams-&gt;charc;</span><br><span class="line">	int* account = pParams-&gt;account;</span><br><span class="line">	int index = pParams-&gt;index;</span><br><span class="line">	</span><br><span class="line">	WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">	EnterCriticalSection(&amp;cs);</span><br><span class="line">	(*account) += c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; deposit &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	//存完钱后看阻塞队列中的结点能否取钱</span><br><span class="line">	if (block_queue-&gt;next != nullptr)</span><br><span class="line">	&#123;</span><br><span class="line">		if (block_queue-&gt;next-&gt;charc-&gt;balance &lt;= (*account))</span><br><span class="line">		&#123;</span><br><span class="line">			</span><br><span class="line">			int i = block_queue-&gt;next-&gt;index;			</span><br><span class="line">			block_queue-&gt;next-&gt;index_next = index+1;</span><br><span class="line">			block_queue-&gt;next-&gt;flag = 1;</span><br><span class="line">			delete pParams; // 释放动态分配的内存</span><br><span class="line">			ReleaseSemaphore(array_handel_sema[i], 1, NULL);	//释放阻塞结点的信号量</span><br><span class="line">			</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	if (index != 13)</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">	delete pParams; // 释放动态分配的内存</span><br><span class="line">	return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//取钱</span><br><span class="line">void Withdraw(LPVOID lpParam)</span><br><span class="line">&#123;</span><br><span class="line">	PTHREAD_PARAMS pParams = (PTHREAD_PARAMS)lpParam;</span><br><span class="line">	charactice* c = pParams-&gt;charc;</span><br><span class="line">	int* account = pParams-&gt;account;</span><br><span class="line">	int index = pParams-&gt;index;</span><br><span class="line"></span><br><span class="line">	WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">	if (*account &lt; c-&gt;balance)//判断能否取钱，不能则加入到阻塞队列</span><br><span class="line">	&#123;</span><br><span class="line">		EnterCriticalSection(&amp;cs);</span><br><span class="line">		std::cout  &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; want to withdraw &quot; &lt;&lt; c-&gt;balance&lt;&lt;&quot; but account is not enough,waiting...&quot;&lt;&lt;std::endl;</span><br><span class="line"></span><br><span class="line">		queue_ptr tmp_ptr = block_queue;</span><br><span class="line">		queue_ptr tmp =new queue &#123;0, index,-1,c ,nullptr &#125;;</span><br><span class="line">		while (tmp_ptr-&gt;next!=nullptr)//感觉有问题</span><br><span class="line">		&#123;</span><br><span class="line">			tmp_ptr = tmp_ptr-&gt;next;</span><br><span class="line">		&#125;</span><br><span class="line">		tmp_ptr-&gt;next = tmp;</span><br><span class="line">		LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">		if (index != 13)</span><br><span class="line">			ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">		WaitForSingleObject(array_handel_sema[index], INFINITE); // 等待信号量 sema</span><br><span class="line"></span><br><span class="line">		EnterCriticalSection(&amp;cs);</span><br><span class="line">		(*account) -= c-&gt;balance;</span><br><span class="line">		std::cout &lt;&lt; &quot;Transaction &quot; &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; withdraw &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">		std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[block_queue-&gt;next-&gt;index_next], 1, NULL);	//释放下一个信号量</span><br><span class="line">		block_queue-&gt;next = block_queue-&gt;next-&gt;next;//将结点从队列中移除</span><br><span class="line">		LeaveCriticalSection(&amp;cs);</span><br><span class="line">		</span><br><span class="line">		delete pParams; // 释放动态分配的内存</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//既不是阻塞队列中取出来的，余额充足</span><br><span class="line">	EnterCriticalSection(&amp;cs);</span><br><span class="line">	(*account) -= c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot;Transaction &quot;  &lt;&lt; &quot;: &quot; &lt;&lt; c-&gt;name &lt;&lt; &quot; withdraw &quot; &lt;&lt; c-&gt;balance;</span><br><span class="line">	std::cout &lt;&lt; &quot; current account balance is &quot; &lt;&lt; *account &lt;&lt; std::endl;</span><br><span class="line">	LeaveCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	if (index != 13)</span><br><span class="line">		ReleaseSemaphore(array_handel_sema[(index + 1)], 1, NULL);	//释放下一个信号量</span><br><span class="line"></span><br><span class="line">	delete pParams; // 释放动态分配的内存</span><br><span class="line">	return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	int account = 10;</span><br><span class="line">	int array_size = 14;</span><br><span class="line">	charactice father = &#123; &quot;father&quot;,1,10,0 &#125;;</span><br><span class="line">	charactice mother = &#123; &quot;mother&quot;,2,20,0 &#125;;</span><br><span class="line">	charactice grandmother = &#123; &quot;grandmother&quot;,3,30,0 &#125;;</span><br><span class="line">	charactice grandfather = &#123; &quot;grandfather&quot;,4,40,0 &#125;;</span><br><span class="line">	charactice uncle = &#123; &quot;uncle&quot;,5,50,0 &#125;;</span><br><span class="line">	charactice Mary = &#123; &quot;Mary&quot;,6,50,1 &#125;;</span><br><span class="line">	charactice Sally = &#123; &quot;Sally&quot;,7,100,1 &#125;;</span><br><span class="line">	charactice charc[7] = &#123; father ,mother ,grandmother ,grandfather ,uncle ,Mary ,Sally &#125;;</span><br><span class="line">	InitializeCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	//获得一个打乱的数组,存储1-7，并且每个数字出现两次</span><br><span class="line">	int array[14];</span><br><span class="line">	int number[7] = &#123; 0,1,2,3,4,5,6 &#125;;</span><br><span class="line">	int  j, tmp;</span><br><span class="line">	srand(time(NULL));</span><br><span class="line">	for (int i = 0; i &lt; array_size; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		array[i] = number[i % 7];</span><br><span class="line">	&#125;</span><br><span class="line">	for (int i = array_size - 1; i &gt; 0; i--) &#123;</span><br><span class="line">		j = rand() % (array_size);</span><br><span class="line">		tmp = array[i];</span><br><span class="line">		array[i] = array[j];</span><br><span class="line">		array[j] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	//初始化信号量</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		if (i == 0)</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = CreateSemaphore(NULL, 1, 1, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		else</span><br><span class="line">		&#123;</span><br><span class="line">			array_handel_sema[i] = CreateSemaphore(NULL, 0, 1, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	std::cout &lt;&lt; &quot;Initial account balance is &quot; &lt;&lt; account &lt;&lt; std::endl;</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		int m = array[i];</span><br><span class="line">		THREAD_PARAMS* arg = new THREAD_PARAMS&#123; i,&amp;account,&amp;charc[m] &#125;;//小心数组越界，而且必须动态分配内存</span><br><span class="line"></span><br><span class="line">		if (charc[m].type == 0) &#123;</span><br><span class="line">			array_handel_t[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Deposit, arg, 0, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">		if (charc[m].type == 1) &#123;</span><br><span class="line">			array_handel_t[i] = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Withdraw, arg, 0, NULL);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		WaitForSingleObject(array_handel_t[i], INFINITE);</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		CloseHandle(array_handel_t[i]);</span><br><span class="line">	for (int i = 0; i &lt; 14; i++)</span><br><span class="line">		CloseHandle(array_handel_sema[i]);</span><br><span class="line"></span><br><span class="line">	DeleteCriticalSection(&amp;cs);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：因为存款函数每次存款结束后只检查阻塞队列的第一个结点，假如第一第二个结点取款总和小于账户余额，则这种方法存在瑕疵</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+        <category>c++</category>
+      </categories>
+      <tags>
+        <tag>c++</tag>
+        <tag>操作系统</tag>
       </tags>
   </entry>
   <entry>
@@ -345,6 +393,41 @@
       <tags>
         <tag>笔记</tag>
         <tag>c++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搭建个人博客遇到的问题</title>
+    <url>/2024/10/18/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h6 id="github-显示404"><a href="#github-显示404" class="headerlink" title="github 显示404"></a>github 显示404</h6><blockquote>
+<p>在本地已经能够正常显示，但是一部署到GitHub上面却显示404，首先在配置文件中修改配置为</p>
+<p>deploy:</p>
+<p> type: git</p>
+<p> repo: <a href="https://github.com/yanxiao588/yanxiao588.github.io">https://github.com/yanxiao588/yanxiao588.github.io</a></p>
+<p> branch: master</p>
+<p>master是重点，进入库中，点击setting，点击Default branch修改为master</p>
+</blockquote>
+<h6 id="下载速度慢"><a href="#下载速度慢" class="headerlink" title="下载速度慢"></a>下载速度慢</h6><blockquote>
+<p>可以用淘宝镜像，执行命令：<code>npm config set registry http://registry.npm.taobao.org/</code></p>
+<p>切换回官方镜像：<code>npm config set registry http://www.npmjs.org</code></p>
+<p>查看镜像：<code>npm get registry</code></p>
+</blockquote>
+<h6 id="文章在首页正文全部展开，不好找文章"><a href="#文章在首页正文全部展开，不好找文章" class="headerlink" title="文章在首页正文全部展开，不好找文章"></a>文章在首页正文全部展开，不好找文章</h6><blockquote>
+<p>在front-matter<code>中添加</code>description，如：</p>
+<p>title: 搭建个人博客遇到的问题<br>date: 2024-10-18 03:56:07<br>tags: [“博客”]<br>categories: [“博客”]<br>description: 搭建博客遇到的问题</p>
+</blockquote>
+<blockquote>
+<p>还要设置 excerpt_description: true（默认已经是这么设置了）</p>
+</blockquote>
+<h6 id="设置本地搜索（localsearch"><a href="#设置本地搜索（localsearch" class="headerlink" title="设置本地搜索（localsearch)"></a>设置本地搜索（localsearch)</h6><blockquote>
+<p>在本地正常运行，但是上传到GitHub后显示的和本地不一样，先确保设置之前，执行<code>hexo clean</code>命令</p>
+<p>再执行<code>hexo d</code>命令，还是有问题可以多试几次，去GitHub仓库刷新一下</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
       </tags>
   </entry>
 </search>
