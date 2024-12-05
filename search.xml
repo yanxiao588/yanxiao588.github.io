@@ -430,4 +430,67 @@
         <tag>博客</tag>
       </tags>
   </entry>
+  <entry>
+    <title>vulnstack4靶场笔记</title>
+    <url>/2024/12/05/vulnstack4%E9%9D%B6%E5%9C%BA%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p><img src="http://vulnstack.qiyuanxuetang.net/media/vuln/screenshot/2020/02/10/FE4Ci3pY9P2Asf1.png" alt="img"></p>
+<p>我自己搭建的环境情况：</p>
+<p>ubuntu网卡:VMnet 3和 VMnet 4</p>
+<p>douser网卡:VMnet 4</p>
+<p>administrator网卡:VMnet 4</p>
+<p>kali(自己的攻击机)网卡：VMnet3</p>
+<p>实际上就是kali（攻击机）和Ubuntu的一块网卡一样，douser、administrator和Ubuntu的另外一个网卡一样即可，而且kali不能ping通douser和administrator</p>
+<h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><p>Ubuntu中进入root：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo su</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/1.png"></p>
+<p>重启全部容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker restart $(docker ps -aq)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/2.png"></p>
+<p>在kali中使用nmap扫描Ubuntu：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo nmap 192.168.157.131</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/3.png"></p>
+<p>可以看到开放了22，2001，2002，2003这4个端口，依次对后面3个端口进行渗透，最后发现只有通过2002端口能够渗透成功</p>
+<p>访问2002端口，可以看到是Apache Tomcat&#x2F;8.5.19页面：</p>
+<p><img src="/../images/vulnstack4/5.png"></p>
+<p>使用awvs扫描</p>
+<p><img src="/../images/vulnstack4/6.png"></p>
+<p>这里使用第一个漏洞（CVE-2017-12615），漏洞的具体利用可以查看 <a href="https://blog.csdn.net/qq_48201589/article/details/135280190">https://blog.csdn.net/qq_48201589/article/details/135280190</a> </p>
+<p>使用burpsuite抓包，上传冰蝎码：</p>
+<p><img src="/../images/vulnstack4/7.png"></p>
+<p>可以看到状态码是201，而且访问<a href="http://192.168.157.131:2002/tt.jsp%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E5%86%B0%E8%9D%8E%E7%A0%81%E4%B8%8A%E4%BC%A0%E6%88%90%E5%8A%9F%EF%BC%9A">http://192.168.157.131:2002/tt.jsp可以看到冰蝎码上传成功：</a></p>
+<p><img src="/../images/vulnstack4/8.png"></p>
+<p>冰蝎成功连接：</p>
+<p><img src="/../images/vulnstack4/9.png"></p>
+<p>现在检查是否处于docker环境中，进入冰蝎的‘命令执行’中，执行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">ls</span> -alh /.dockerenv</span><br></pre></td></tr></table></figure>
+
+<p>发现结果是：</p>
+<p><img src="/../images/vulnstack4/10.png"></p>
+<p>可以判断目前处于docker环境中，接下来的思路就是进行docker逃逸</p>
+<h4 id="docker逃逸"><a href="#docker逃逸" class="headerlink" title="docker逃逸"></a>docker逃逸</h4><p>有关docker逃逸的知识可以参考：<a href="https://wiki.teamssix.com/cloudnative/docker/container-escape-check.html">容器逃逸方法检测指北 | T Wiki</a></p>
+<p>判断当前是否是特权模式，执行命令：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /proc/self/status | grep -qi <span class="string">&quot;0000003fffffffff&quot;</span> &amp;&amp; <span class="built_in">echo</span> <span class="string">&quot;Is privileged mode&quot;</span> || <span class="built_in">echo</span> <span class="string">&quot;Not privileged mode&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/11.png"></p>
+<p>可以看到处于特权模式，因此可以通过挂载磁盘设备来逃逸</p>
+<p>先查看要挂载磁盘设备：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">fdisk -l</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/vulnstack4/12.png"></p>
+<p>可发现磁盘有三个分区，sda1是包含Linux文件系统的分区，通常是可挂载的；sda2是扩展分区，sda5是swap分区，用于虚拟内存，这两个分区都是不可挂载的</p>
+<p>在根目录下创建一个test文件夹，将sda1挂载到该文件夹下：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /test</span><br><span class="line">mount /dev/sda1 /test</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>渗透</category>
+      </categories>
+      <tags>
+        <tag>渗透</tag>
+        <tag>vulnstack靶场</tag>
+      </tags>
+  </entry>
 </search>
